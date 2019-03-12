@@ -1,0 +1,37 @@
+<!DOCTYPE html>  
+<html lang="zh-CN">  
+<head>  
+<meta charset="utf-8">  
+<meta http-equiv="X-UA-Commpatible" content="IE=edge">  
+<title>HTML遮罩层</title>  
+<link rel="stylesheet" href="index.css">  
+</head>  
+<body>  
+    <div class="header" id="header">  
+        <div class="title-outer">  
+            <span class="title">  
+                HTML遮罩层使用   
+            </span>  
+        </div>  
+    </div>  
+    <div class="body" id="body">  
+        <iframe id="iframeRight" name="iframeRight" width="100%" height="100%"  
+            scrolling="no" frameborder="0"  
+            style="border: 0px;margin: 0px; padding: 0px; width: 100%; height: 100%;overflow: hidden;"  
+            onload="rightIFrameLoad(this)" src="body.html"></iframe>  
+    </div>  
+       
+    <!-- 遮罩层DIV -->  
+    <div id="overlay" class="overlay"></div>  
+    <!-- Loading提示 DIV -->  
+    <div id="loadingTip" class="loading-tip">  
+        <!-- <img src="images/loading.gif" />  --> 
+    </div>  
+       
+    <!-- 模拟模态窗口DIV -->  
+    <div class="modal" id="modalDiv"></div>  
+       
+    <script type='text/javascript' src="jquery-1.9.1.min.js"></script>  
+    <script type="text/javascript" src="index.js"></script>  
+</body>  
+</html>

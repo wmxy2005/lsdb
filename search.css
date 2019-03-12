@@ -1,0 +1,63 @@
+body > .container  {
+  padding: 90px 15px 50px;
+}
+
+/*.navbar-nav a {
+  color: #fff
+}
+
+.navbar-nav a:hover {
+  color: #000;
+  background-color: #fff
+}
+*/
+/*.mytitle {
+  line-height: 3em;
+  height: 6em;
+  overflow: hidden;
+  padding: 0 1px;
+  text-overflow: ellipsis;
+}*/
+
+/*.mytitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 5.5em
+}
+
+.caption {
+  height: 6em
+}
+*/
+.row.display-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+.thumbnail {
+  height: 95%;
+  max-height: 500px
+}
+
+/* extra positioning */
+.thumbnail {
+  display: flex;
+  flex-direction: column;
+}
+
+.thumbnail .myimage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 80%;
+}
+
+.thumbnail .caption {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+img {
+  position: relative;
+  max-height: 25em
+}
