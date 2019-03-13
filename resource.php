@@ -34,7 +34,7 @@ function getFile($dir) {
     return $fileArray;
 }
 
-$base_dir = "D:\\Doc\\fWeb";
+$base_dir = "sample";
 $base = '';
 $cate = '';
 $subcate = '';

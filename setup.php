@@ -230,8 +230,8 @@ function getFile($dir) {
 </script>
 <?php
 flush();
-$base = "javfree";
-$baseDir = "D:\\Doc\\fWeb\\" . $base;
+$base = "wallpaper";
+$baseDir = "sample\\" . $base;
 $pdo = new \PDO('sqlite:'.'mydb.db');
 //$pdo->exec("delete from items");
 
