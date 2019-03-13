@@ -6,3 +6,5 @@
 - detail.php，详情页面
 - query.php, 资源获取页面
 
+![](sample/sample.png)
+
