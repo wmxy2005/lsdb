@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+	ErrorDocument 404 /myweb/error.php
+    RewriteRule ^/?([a-z]+)$ $1.php [L]
+</IfModule>
+<FilesMatch ".(htaccess|htpasswd|ini|phps|fla|psd|log|sh|tpl)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>

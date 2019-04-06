@@ -1,6 +1,6 @@
 <?php
 function queryString($keyword, $tag, $category, $start, $page) {
-	$qString = 'search.php';
+	$qString = 'search';
 	$data = array();
 	if(!empty($keyword))
 		$data["q"] = $keyword;
@@ -63,29 +63,32 @@ echo '<div class="searchword alert alert-info">
 while ($row = $result->fetch(\PDO::FETCH_ASSOC)){
 	echo 
 	'<div class="col-sm-6 col-md-4 col-lg-3">
-     	<div class="thumbnail">
-     	<div class="myimage">
-      	<a href="detail.php?id='.$row['id'].'">
-        <img class="img-responsive center-block" src="resource.php?base='. $row['base'].'&cata='. $row['category'] .'&subcata='.$row['subcategory'].'&name='. $row['name'].'&filename='. $row['thumbnail'] .'">
-        </a>
-        </div>
+     	<div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative thumbnail">
+     	<div class="d-flex flex-column justify-content-between" style="height:100%;width:100%">
+      	<a class="" href="detail?id='.$row['id'].'">
+        <img class="img-fluid" src="resource?base='. $row['base'].'&cata='. $row['category'] .'&subcata='.$row['subcategory'].'&name='. $row['name'].'&filename='. $row['thumbnail'] .'">
+		</a>
+
+		<div style="margin-left:.3em;margin-right:.3em;margin-bottom:.2m">
         <div class="caption">
 	        <div class="mytitle">
 	        <h5>
-	            <a href="detail.php?id='.$row['id'].'" data-toggle="tooltip1" title="'.$row['title'].'"><p style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">'
+	            <a href="detail?id='.$row['id'].'" data-toggle="tooltip1" title="'.$row['title'].'"><p style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">'
 	              . $row['title'] .
 	            '</p></a>
 	        </h5>
 	        </div>
     	</div>
     	<div style="margin-bottom: 5px;">'
-        	.(empty($row['subcategory']) ? '<a href="'.queryString('', '', $row['category'], 0, 0).'"><span class="label label-primary">'. $row['category'] .'</span></a>'
-        	: '<a href="'.queryString('', $row['subcategory'], 'tag', 0, 0).'"><span class="label label-primary">'. $row['subcategory'] .'</span></a>')
+        	.(empty($row['subcategory']) ? '<a href="'.queryString('', '', $row['category'], 0, 0).'"><span class="badge badge-primary">'. $row['category'] .'</span></a>'
+        	: '<a href="'.queryString('', $row['subcategory'], 'tag', 0, 0).'"><span class="label label-success">'. $row['subcategory'] .'</span></a>')
 	        .'<div style="float:right; vertical-align: top;">
 	          <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
 	          <span >'. $row['date'] .'</span>
 	        </div>
         </div>
+		</div>
+		</div>
     	</div>
     </div>';
 }
@@ -94,19 +97,19 @@ while ($row = $result->fetch(\PDO::FETCH_ASSOC)){
 $q = queryString($keyword, $tag, $category, $start, 0);
 echo '</div><nav aria-label="...">
 	        <ul class="pagination pagination-lg">
-	          <li><a href="'. $q .'"
+	          <li class="page-item"><a class="page-link" href="'. $q .'"
 	            <span>
 	              <span aria-hidden="true">&laquo;</span>
 	            </span>
 	          </li>';
 if($page > 0) {
 	$q = queryString($keyword, $tag, $category, $start, $page-1);
-	echo '<li><a href="'. $q .'" aria-label="">
+	echo '<li class="page-item"><a class="page-link" href="'. $q .'" aria-label="">
               <span aria-hidden="true">Prev</span>
             </a>
           </li>';
 } else {
-	echo '<li class="disabled"><a aria-label="">
+	echo '<li class="page-item disabled"><a class="page-link" aria-label="">
               <span aria-hidden="true">Prev</span>
             </a>
           </li>';
@@ -115,27 +118,27 @@ if($page > 0) {
 for($i = $page - 5; $i <= $toalPage && $i <= $page+5; $i = $i+1) {
 	if($i >= 0) {
 		if($i == $page)
-			echo '<li class="active"><span>' . ($i+1) .'</span></li>';
+			echo '<li class="page-item active"><span class="page-link">' . ($i+1) .'</span></li>';
 		else {
 			$q = queryString($keyword, $tag, $category, $start, $i);
-			echo '<li><a href="'.$q.'">'. ($i+1) .'</a></li>';
+			echo '<li class="page-item"><a class="page-link" href="'.$q.'">'. ($i+1) .'</a></li>';
 		}
 	}
 }
 if($page < $toalPage) {
 	$q = queryString($keyword, $tag, $category, $start, $page+1);
-	echo '<li><a href="'. $q .'" aria-label="">
+	echo '<li class="page-item"><a class="page-link" href="'. $q .'" aria-label="">
 	              <span aria-hidden="true">Next</span>
 	            </a>
 	          </li>';
 } else {
-	echo '<li class="disabled"><a aria-label="">
+	echo '<li class="page-item disabled"><a class="page-link" aria-label="">
               <span aria-hidden="true">Next</span>
             </a>
           </li>';
 }
 $q = queryString($keyword, $tag, $category, $start, $toalPage);
-echo '<li><a href="'. $q .'" aria-label="">
+echo '<li class="page-item"><a class="page-link" href="'. $q .'" aria-label="">
 	              <span aria-hidden="true">»</span>
 	            </a>
 	          </li>';

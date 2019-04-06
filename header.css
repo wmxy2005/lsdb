@@ -1,18 +1,29 @@
-/* Sticky footer styles
+﻿/* Sticky footer styles
 -------------------------------------------------- */
 html {
   position: relative;
   min-height: 100%;
 }
 body {
-   margin-bottom: 80px;
+   margin-bottom: 5em;
+   /*background-color: #eee;*/
+}
+
+.navbar-nav>a {
+	color: #343a40;
+}
+.navbar-nav>a:hover {
+	color: #de5833;
+}
+body > .container  {
+  padding: 90px 15px 50px;
 }
 .footer {
   position: absolute;
   bottom: 0;
   width: 100%;
   /* Set the fixed height of the footer here */
-  height: 60px;
+  height: 4em;
   background-color: #f5f5f5;
 }
 
@@ -38,7 +49,7 @@ code {
 .header {
     line-height: 30px;
     border-bottom: 1px solid #dbdbdb;
-    padding: 10px 10% 10px 10px;
+    /*padding: 10px 10% 10px 10px;*/
     background-color: #f1f1f1;
     /*background-color: #545454;*/
     /*background-color: #636363;*/
@@ -68,7 +79,7 @@ code {
     float: left;
     margin: 0;
     padding: 5px;
-    width: 40%
+    max-width: 25em
 }
 
 .header .search-form {
@@ -78,14 +89,14 @@ code {
 .header .search-btn {}
 
 .header .search-btn:hover {
-    background: #63ad56;
+    background: #de5833;
     color: #fff
 }
 
 .search-area {
     margin: 0 auto;
     max-width: 700px;
-    width: 60%;
+    width: 75%;
     margin-top: 30px
 }
 
@@ -100,7 +111,7 @@ code {
 }
 
 .search-form:hover {
-    border-color: #a0a0a0 #b9b9b9 #b9b9b9 !important
+    border-color: #de5833 #de5833c7 #de583394 !important
 }
 
 .search-input {
