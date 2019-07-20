@@ -1,0 +1,112 @@
+/*body > .container  {
+  padding: 90px 15px 50px;
+}
+
+.navbar-nav a {
+  color: #fff
+}
+
+.navbar-nav a:hover {
+  color: #000;
+  background-color: #fff
+}
+*/
+/*.mytitle {
+  line-height: 3em;
+  height: 6em;
+  overflow: hidden;
+  padding: 0 1px;
+  text-overflow: ellipsis;
+}*/
+.loading{
+    /*固定loading*/
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /*垂直水平居中*/
+    margin: -20px 0 0 -20px;
+    width: 3em;
+    height: 3em;
+    border: .2em solid;
+    border-color: #333 #333 transparent;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: spin 1s linear infinite;
+    opacity: 0
+}
+@keyframes spin{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+#svg-loading{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin: -3em 0 0 -3em;
+    width: 6em;
+    height: 6em;
+    animation: spin 3s linear infinite;
+}
+.mytitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 3.2em;
+  font-size: .9em
+}
+
+/*.caption {
+  height: 6em
+}
+*/
+.bottom-page {
+   margin-top: 2em;
+}
+.row.display-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+/* extra positioning */
+.thumbnail {
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dee2e6 !important;
+}
+
+.thumbnail .myimage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 80%;
+}
+
+.thumbnail .caption {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+/*
+.item-favi:hover{
+	color: #de5833;
+}
+
+.item-like:hover{
+	color: #838383 !important;
+}*/
+
+@media all and (min-width:575.98px){
+img {
+  position: relative;
+  max-height: 10em
+}
+}
+@media all and (max-width:576px){
+img {
+  position: relative;
+  max-height: 20em
+}
+}

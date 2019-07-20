@@ -1,5 +1,9 @@
-<?php require 'header.tpl'; ?>
-<?php
+<?php require_once 'core/init.php';
+require_once 'core/template.php';
+$conf = Config::$config;
+$dbname = $conf['dbname'];
+$pdo = new \PDO('sqlite:'.$dbname);
+
 $id = 0;
 $queries = array();
 parse_str($_SERVER['QUERY_STRING'], $queries);
@@ -7,35 +11,26 @@ if(array_key_exists('id', $queries)) {
 	$id = $queries['id'];
 }
 if ($id > 0) {
-	$pdo = new \PDO('sqlite:'.'mydb.db');
-	$sql = "SELECT * FROM items where id = ". $id;
+	$sql = "SELECT a.*, b.id as favi FROM items as a left join itemfavi as b on a.id = b.itemId where a.id = ". $id;
 	$result = $pdo->query($sql);
 	if($row = $result->fetch(\PDO::FETCH_ASSOC)) {
-		echo '<div class="jumbotron"><div class="container">
-	        <h2>'. $row['title'] .'</h2>
-	        <p>'. str_replace(PHP_EOL, '<br/>', $row['content']) .'</p><div class="bs-docs-section">';
-	     
-	    $tags = explode(";", $row['tag']);
-	    for ($i=0; $i < count($tags); $i++) {
-	    	$tagValue = $tags[$i];
-	    	if($tagValue != '')
-	     		echo '<a href="search?tag='.$tagValue.'"><span class="badge badge-secondary">'. $tagValue .'</span></a> ';
-	    }
-	    echo '</div><div class="row"><div class="col-md-12">';
-	    $images = explode(";", $row['images']);
-	    for ($i=0; $i < count($images); $i++) { 
-	    	echo '<br><div class="media"><img class="img-fluid" src="resource.php?base='. $row['base'].'&cata='. $row['category'] .'&subcata='.$row['subcategory'].'&name='. $row['name'].'&filename='. $images[$i] .'"/></div>';
-	    }
-	    echo '</div></div></div></div>';
-	    
+		$template = new Template('templates/detailpage.php');
+		$template->item = $row;
+		$template->title = $row['title'];
+		$template->favi = $row['favi'];
+		$template->id = $row['id'];
+		$template->content = $row['content'];
+		$template->tag = $row['tag'];
+		$template->base = $row['base'];
+		$template->category = $row['category'];
+		$template->subcategory = $row['subcategory'];
+		$template->name = $row['name'];
+		$template->images = $row['images'];
+
+		echo $template;
+	} else {
+		header('Location: error');
 	}
 } else {
-	echo "Not found";
+	header('Location: error');
 }
-?>
-<style type="text/css">
-  body > .jumbotron  {
-    padding: 100px 15px 50px;
-  }
-</style>
-<?php require 'footer.tpl'; ?>

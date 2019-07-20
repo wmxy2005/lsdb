@@ -1,4 +1,7 @@
-<?php require 'header.tpl'; ?>
+<?php require_once 'core/init.php';
+$title = L('process_file');
+require 'templates/header.tpl';
+?>
 <style type="text/css">
   #startBtn{
     width: 10em;
@@ -9,6 +12,11 @@
 	color:#FFF;
     background: #DE5834;
   }
+  #startBtn.running{
+	background-color:#FF3030;
+	border-color:#FF6060;
+	color:#FFFFFF;
+  }
   #progress{
     background-color:#de5833;
   }
@@ -18,20 +26,26 @@
     margin-top: 1em;
   }
 </style>
+<div class="pageinfo jumbotron">
 	<div class="container">
+	<h4><?php echo L('process_file'); ?></h4>
+	</div>
+</div>
+<div class="container">
     <div class="jumbotron">
-        <h3>Processing files</h3>
-        <div class="progress">
-          <div id="progress" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+        <div id="progressBar" class="progress" style="opacity: 0">
+          <div id="progress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
           </div>
         </div>
+		<br>
         <div id="status"></div>
+		<br>
         <div class="checkbox">
           <label>
-            <input id="appendMode" type="checkbox" value="append-mode"> Append mode
+            <input id="appendmode" type="checkbox" checked="checkbox"><?php echo ' '.L('append_mode'); ?>
           </label>
         </div>
-        <a id="startBtn" class="btn btn-md btn-block btn-outline-primary" href="javascript:start();" role="button">Start</a>
+        <a id="startBtn" class="btn btn-md btn-block" href="javascript:start();" role="button"><?php echo L('start'); ?></a>
         <textarea id="log"></textarea>
     </div>
 </div>
@@ -47,13 +61,17 @@ function start(){
     return;
   isProcessing = true;
   $('#log').empty();
-  $("#startBtn").attr("disabled","true");
-  $("#startBtn").attr("disabled",true);
-  $("#startBtn").attr("disabled","disabled");
+  $("#startBtn").text("Running");
+  $("#startBtn").toggleClass("disabled");
+  $("#startBtn").toggleClass("running");
+  $("#progressBar").css("opacity","1");
   log(100, "开始...", "");
   $.ajax({
     type: "POST",
     url: "initfiles.php",
+	data : { 
+      "appendmode" : $("#appendmode").prop("checked")
+     },
     xhrFields: {
         onprogress: function (e) {
           var str = e.currentTarget.responseText;
@@ -61,13 +79,17 @@ function start(){
         }
     },
     success: function (response) {
-      $("#startBtn").removeAttr("disabled");
-      $("#startBtn").attr("disabled",false);
-      isProcessing = false;
+      $("#startBtn").text("Start");
+	  $("#startBtn").toggleClass("disabled");
+      $("#startBtn").toggleClass("running");
+	  $("#progressBar").css("opacity","0");
+	  isProcessing = false;
     },
     error: function (response) {
-      $("#startBtn").removeAttr("disabled");
-      $("#startBtn").attr("disabled","false");
+      $("#startBtn").text("<?php echo L('start'); ?>");
+	  $("#startBtn").toggleClass("disabled");
+	  $("#startBtn").toggleClass("<?php echo L('running'); ?>");
+	  $("#progressBar").css("opacity","0");
       isProcessing = false;
     }
   });
@@ -89,4 +111,4 @@ $(document).ready(function(){
   //start();
 });
 </script>
-<?php require 'footer.tpl'; ?>
+<?php require 'templates/footer.tpl'; ?>

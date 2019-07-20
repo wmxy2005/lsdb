@@ -1,27 +1,13 @@
-<?php
-function queryString($keyword, $tag, $category, $start, $page) {
-	$qString = 'search';
-	$data = array();
-	if(!empty($keyword))
-		$data["q"] = $keyword;
-	if(!empty($tag))
-		$data["tag"] = $tag;
-	if(!empty($category))
-		$data["category"] = $category;
-	if(!empty($start))
-		$data["start"] = $start;
-	if(!empty($page))
-		$data["page"] = $page;
-	if(sizeof($data) > 0)
-		return $qString . '?' . http_build_query($data);
-	else
-		return $qString;
-}
+<?php require_once 'core/init.php';
+require_once 'core/config.php';
+require_once 'core/template.php';
+$time_start = microtime(true);
 $start = 0;
-$page = 0;
+$page = 1;
 $keyword = '';
 $tag = '';
 $category = '';
+$favi = 0;
 $queries = array();
 parse_str($_SERVER['QUERY_STRING'], $queries);
 if(array_key_exists('start', $queries)) {
@@ -39,109 +25,64 @@ if(array_key_exists('tag', $queries)) {
 if(array_key_exists('category', $queries)) {
 	$category = trim(rawurldecode($queries['category']));
 }
-$pdo = new \PDO('sqlite:'.'mydb.db');
+if(array_key_exists('myfavi', $queries)) {
+	$favi = $queries['myfavi'];
+}
+
+$conf = Config::$config;
+$dbname = $conf['dbname'];
+$pdo = new \PDO('sqlite:'.$dbname);
 $pagesize = 20;
 
-$cond = " where id > ". $start . (empty($keyword) ? "" : " and (title like '%" . $keyword . "%' or name like '%" . $keyword . "%' or tag like '%" . $keyword . "%')");
+$sort = "a.date desc, a.id desc";
+$cond = " where a.id > ". $start;
+if(!empty($keyword)) {
+	$words= preg_split('/ /s', $keyword);
+	for($i = 0; $i < sizeof($words); $i=$i+1) {
+		$word = $words[$i];
+		if(!empty($word))
+			$cond = $cond . " and (a.title like '%" . $word . "%' or a.name like '%" . $word . "%' or a.tag like '%" . $word . "%' or a.content like '%" . $word . "%')";
+	}
+}
 if(!empty($tag))
-	$cond = $cond . " and tag like '%" . $tag ."%'";
+	$cond = $cond . " and a.tag like '%" . $tag ."%'";
 if(!empty($category))
-	$cond = $cond . " and category like '%" . $category ."%'";
-
-$sql = "SELECT count(1) FROM items". $cond;
+	$cond = $cond . " and a.category like '%" . $category ."%'";
+if($favi > 0) {
+	$sort = "b.datetime desc , a.date desc, a.id desc";
+	$cond = $cond . " and b.id not null";
+}
+$sql = "SELECT count(1) FROM items as a left join itemfavi as b on a.id = b.itemId ". $cond;
 $result = $pdo->query($sql);
 $count = $result->fetchColumn();
 $toalPage = ceil($count / $pagesize) - 1;
-$begin = $start + 20*$page;
+$begin = $start + $pagesize*($page-1);
 
-$sql = "SELECT * FROM items". $cond ." order by date desc limit ". $begin . ", 20";
+$sql = "SELECT a.*,b.id as favi FROM items as a left join itemfavi as b on a.id = b.itemId ". $cond ." order by ".$sort." limit ". $begin . ", ".$pagesize;
 $result = $pdo->query($sql);
-echo '<div class="searchword alert alert-info">
-		<span class="label label-primary">'.(!empty($tag)?$tag:$category).'</span>
-		<strong> Total '.$count. ' record(s), '. ($toalPage+1) .' page(s)'. (empty($keyword) ? '' : ', searching for '. $keyword) .'</strong></div>
-      <div class="row" style="display:flex; flex-wrap: wrap;">'; 
+$total_mess = L('total_mess');
+$arr1 = array('%1%','%2%');
+$arr2 = array($count.'',($toalPage+1).'');
+$total_mess = str_replace($arr1,$arr2,$total_mess);
+
+$res = array();
 while ($row = $result->fetch(\PDO::FETCH_ASSOC)){
-	echo 
-	'<div class="col-sm-6 col-md-4 col-lg-3">
-     	<div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative thumbnail">
-     	<div class="d-flex flex-column justify-content-between" style="height:100%;width:100%">
-      	<a class="" href="detail?id='.$row['id'].'">
-        <img class="img-fluid" src="resource?base='. $row['base'].'&cata='. $row['category'] .'&subcata='.$row['subcategory'].'&name='. $row['name'].'&filename='. $row['thumbnail'] .'">
-		</a>
+	array_push($res, $row);
+}
+$template = new Template('templates/searchpage.php');
+$template->res = $res;
+$template->start = $start;
+$template->page = $page;
+$template->toalPage = $toalPage;
+$template->favi = $favi;
+$template->total_mess = $total_mess;
+$template->category = $category;
+$template->tag = $tag;
+$template->keyword = $keyword;
 
-		<div style="margin-left:.3em;margin-right:.3em;margin-bottom:.2m">
-        <div class="caption">
-	        <div class="mytitle">
-	        <h5>
-	            <a href="detail?id='.$row['id'].'" data-toggle="tooltip1" title="'.$row['title'].'"><p style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">'
-	              . $row['title'] .
-	            '</p></a>
-	        </h5>
-	        </div>
-    	</div>
-    	<div style="margin-bottom: 5px;">'
-        	.(empty($row['subcategory']) ? '<a href="'.queryString('', '', $row['category'], 0, 0).'"><span class="badge badge-primary">'. $row['category'] .'</span></a>'
-        	: '<a href="'.queryString('', $row['subcategory'], 'tag', 0, 0).'"><span class="label label-success">'. $row['subcategory'] .'</span></a>')
-	        .'<div style="float:right; vertical-align: top;">
-	          <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-	          <span >'. $row['date'] .'</span>
-	        </div>
-        </div>
-		</div>
-		</div>
-    	</div>
-    </div>';
-}
+$time_cost = round(microtime(true) - $time_start, 3);
+$template->timeCost = $time_cost . "s";
 
-// Pages
-$q = queryString($keyword, $tag, $category, $start, 0);
-echo '</div><nav aria-label="...">
-	        <ul class="pagination pagination-lg">
-	          <li class="page-item"><a class="page-link" href="'. $q .'"
-	            <span>
-	              <span aria-hidden="true">&laquo;</span>
-	            </span>
-	          </li>';
-if($page > 0) {
-	$q = queryString($keyword, $tag, $category, $start, $page-1);
-	echo '<li class="page-item"><a class="page-link" href="'. $q .'" aria-label="">
-              <span aria-hidden="true">Prev</span>
-            </a>
-          </li>';
-} else {
-	echo '<li class="page-item disabled"><a class="page-link" aria-label="">
-              <span aria-hidden="true">Prev</span>
-            </a>
-          </li>';
-}
-
-for($i = $page - 5; $i <= $toalPage && $i <= $page+5; $i = $i+1) {
-	if($i >= 0) {
-		if($i == $page)
-			echo '<li class="page-item active"><span class="page-link">' . ($i+1) .'</span></li>';
-		else {
-			$q = queryString($keyword, $tag, $category, $start, $i);
-			echo '<li class="page-item"><a class="page-link" href="'.$q.'">'. ($i+1) .'</a></li>';
-		}
-	}
-}
-if($page < $toalPage) {
-	$q = queryString($keyword, $tag, $category, $start, $page+1);
-	echo '<li class="page-item"><a class="page-link" href="'. $q .'" aria-label="">
-	              <span aria-hidden="true">Next</span>
-	            </a>
-	          </li>';
-} else {
-	echo '<li class="page-item disabled"><a class="page-link" aria-label="">
-              <span aria-hidden="true">Next</span>
-            </a>
-          </li>';
-}
-$q = queryString($keyword, $tag, $category, $start, $toalPage);
-echo '<li class="page-item"><a class="page-link" href="'. $q .'" aria-label="">
-	              <span aria-hidden="true">»</span>
-	            </a>
-	          </li>';
-echo '</ul></nav>';
+echo $template;
 $pdo = null; 
 ?>

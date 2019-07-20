@@ -1,18 +1,18 @@
 <?php require_once 'core/config.php';
 $proc_total = 0;
 $proc = 0;
-$item_check = true;
-ini_set('max_execution_time','3000');
+$item_check = false;
+ini_set('max_execution_time','30000');
 $time_start = microtime(true);
 $time_current = $time_start;
 ob_start();
 const DIR_SEP = DIRECTORY_SEPARATOR;
 
-$appendMode = ("true" == $_POST['appendmode'] ? true : false);
+$appendMode = false;
 
 $conf = Config::$config;
 $folder = $conf['folder'];
-$base = $conf['name'];
+$base = 'avsox';
 $dbname = $conf['dbname'];
 $appendfilename = $conf['appendfilename'];
 
@@ -79,39 +79,41 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
             if ($mainTxt == $dirFile) {
                 $file_arr = file($dir . DIR_SEP . $file . DIR_SEP. $mainTxt);
                 for($line = 0; $line < count($file_arr); $line++){
-                    if($line == 0) {
-                        $title = $file_arr[$line];
-                    } else if ($line == 1) {
+                    $str = trim($file_arr[$line]);
+					if($line == 0) {
                         $tag = $file_arr[$line];
+                    } else if ($line == 1) {
+                        $title = $file_arr[$line];
                     } else if ($line == 3) {
-                        $date = $file_arr[$line];
-                        $date = date('Y-m-d',strtotime($date));
+						$index = strpos($str,":");
+						if($index) {
+							$dateStr = substr($str, $index+1);
+							$date = date('Y-m-d',strtotime($dateStr));
+						}
                     }
+					if($line > 0) {
+						if($str != "") {
+							$content = $content . ($content == "" ? "" : PHP_EOL) . $str;
+						}
+					}
                 }
-            } else if (strpos($dirFile,"_src.txt")) {
+            } else if ($dirFile == $name."_src.txt") {
                 $file_arr = file($dir . DIR_SEP . $file . DIR_SEP. $dirFile);
                 for($line = 0; $line < count($file_arr); $line++){
-                    $str = $file_arr[$line];
+                    $str = trim($file_arr[$line]);
                     if($str != "") {
                         $index = strpos($str,":");
                         if($index) {
                             $image = substr($str, 0, $index);
                             if($line == 0) {
                                 $thumbnail = $image;
-                            }
-                            
-                            if($image != "") {
-                                $images = $images . ($images == "" ? "" : ";") . $image;
-                            }
+								$images = $image;
+                            } else {
+								if($image != "" && (true == preg_match('/[0-9].*/', $image))) {
+									$images = $images . ($images == "" ? "" : ";") . $image;
+								}
+							}
                         }
-                    }
-                }
-            } else if ($dirFile == "content.txt") {
-                $file_arr = file($dir . DIR_SEP . $file . DIR_SEP. $dirFile);
-                for($line = 0; $line < count($file_arr); $line++) {
-                    $str = $file_arr[$line];
-                    if($str != "") {
-                        $content = $content . ($content == "" ? "" : "\n") . $str;
                     }
                 }
             }
@@ -124,62 +126,16 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
         $pdo->exec("delete from items where base = '". $base ."' and category = '". $category . "' and subcategory = '". $subcategory ."' and name = '". $file ."'");
         $res = $pdo->exec("insert into items(base, category, subcategory, name, title, date, thumbnail, tag, content, images) values('". $base ."','". $category . "','". $subcategory ."','". $name ."','". $title."', '". $date."', '". $thumbnail ."','". $tag ."', '". $content . "','". $images ."')");
     }
+	//echo "('". $base ."','". $category . "','". $subcategory ."','". $name ."','". $title."', '". $date."', '". $thumbnail ."','". $tag ."', '". $content . "','". $images ."')";
     closedir ( $dirHandle );
 }
 
-function getFile($dir) {
-    $fileArray[]=NULL;
-    if (false != ($handle = opendir ( $dir ))) {
-        $i=0;
-        while ( false !== ($file = readdir ( $handle )) ) {
-            if ($file != "." && $file != ".." && strpos($file,".")) {
-                $fileArray[$i]="./imageroot/current/".$file;
-                echo $fileArray[$i];
-                if($i==100){
-                    break;
-                }
-                $i++;
-            }
-        }
-        closedir ( $handle );
-    }
-    return $fileArray;
-}
-
-if($appendMode) {
-    $append_attr = file($appendFile);
-    for($line = 0; $line < count($append_attr); $line++) {
-        $str = $append_attr[$line];
-        if($str != "") {
-            $result = preg_split('/,/s', $str,3);
-            if(sizeof($result) == 3) {
-                $category = $result[0];
-                $subCategory = $result[1];
-                $name = $result[2];
-
-                $dir = $baseDir . DIR_SEP . $category . (empty($subCategory) ? '' : DIR_SEP . $subCategory);
-                processDetail($pdo, $base, $dir, $category, $subCategory, trim($name), true);
-            }
-        }
-    }
-} else if (false != ($handle = opendir ( $baseDir ))) {
-	//$pdo->exec("delete from items");
+if (false != ($handle = opendir ( $baseDir ))) {
+	//$pdo->exec("delete from items where base='" . $base . "'");
     while( false !== ($file = readdir ( $handle )) ) {
         if ($file != "." && $file != ".." && !strpos($file,".")) {
             $category = $file;
-            if($category != "tag")
-                getDir($pdo, $baseDir . DIR_SEP . $category, $base, $category, '', false);
-            else {
-                 if (false != ($tagHandle = opendir ($baseDir . DIR_SEP . $category ))) {
-                    while ( false !== ($tagDir = readdir ( $tagHandle )) ) {
-                        if ($tagDir != "." && $tagDir != ".." && !strpos($tagDir,".")) {
-                            //Tag category
-                            getDir($pdo, $baseDir . DIR_SEP . $category . DIR_SEP . $tagDir, $base, 'tag', $tagDir, false);
-                        }
-                    }
-                    closedir ( $tagHandle );
-                }
-            }
+            getDir($pdo, $baseDir . DIR_SEP . $category, $base, $category, '', true);
         }
     }
     closedir ( $handle );

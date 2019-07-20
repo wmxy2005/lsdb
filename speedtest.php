@@ -1,4 +1,6 @@
-<?php require 'header.tpl'; ?>
+<?php require_once 'core/init.php';
+$title = L('speed_test');
+require 'templates/header.tpl'; ?>
 <style type="text/css">
 	#content{
 		text-align:center;
@@ -22,10 +24,10 @@
 		color:#FFFFFF;
 	}
 	#startStopBtn:before{
-		content:"Start";
+		content:"<?php echo L('start'); ?>";
 	}
 	#startStopBtn.running:before{
-		content:"Abort";
+		content:"<?php echo L('abort'); ?>";
 	}
 	#test{
 		margin-top:2em;
@@ -136,12 +138,17 @@ function initUI(){
 	$("#progressBar").css("opacity","0");
 }
 </script>
+<div class="pageinfo jumbotron">
+	<div class="container">
+	<h4><?php echo L('speed_test'); ?></h4>
+	</div>
+</div>
 <div id="content" class="container">
 <div class="jumbotron">
 	<p><a id="startStopBtn" class="btn btn-lg" href="javascript:void();" onclick="startStop()" role="button"></a></p>
 	<br>
 	<div id="progressBar" class="progress" style="opacity: 0">
-      <div id="progress" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+      <div id="progress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
       </div>
       <br>
     </div>
@@ -178,4 +185,4 @@ function initUI(){
 </div>
 </div>
 <script type="text/javascript">initUI();</script>
-<?php require 'footer.tpl'; ?>
+<?php require 'templates/footer.tpl'; ?>
