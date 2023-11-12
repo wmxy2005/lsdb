@@ -4,7 +4,11 @@ $page = 1;
 $keyword = '';
 $tag = '';
 $category = '';
-$myfavi = 0;
+$favi = 0;
+$censor = 2;
+$sorts = 0;
+$display = 0;
+$base = '';
 $queries = array();
 if(array_key_exists('QUERY_STRING', $_SERVER)) {
 parse_str($_SERVER['QUERY_STRING'], $queries);
@@ -23,8 +27,20 @@ if(array_key_exists('tag', $queries)) {
 if(array_key_exists('category', $queries)) {
 	$category = trim(rawurldecode($queries['category']));
 }
-if(array_key_exists('myfavi', $queries)) {
-	$myfavi = $queries['myfavi'];
+if(array_key_exists('favi', $queries)) {
+	$favi = $queries['favi'];
+}
+if(array_key_exists('censor', $queries)) {
+	$censor = $queries['censor'];
+}
+if(array_key_exists('sorts', $queries)) {
+	$sorts = $queries['sorts'];
+}
+if(array_key_exists('display', $queries)) {
+	$display = $queries['display'];
+}
+if(array_key_exists('base', $queries)) {
+	$base = $queries['base'];
 }
 }
 $pagetag = L('sitename');
@@ -36,6 +52,9 @@ if(!empty($keyword)) {
 	$pagetag = $category;
 }
 $title = (empty($myfavi)?$pagetag:L('myfavi')). ' - '.str_replace('%1%',$page,L('page_format'));
+if($favi > 0){
+	$main_menu[0]['active'] = 1;
+}
 require 'templates/header.tpl'; ?>
 <!-- Main jumbotron for a primary marketing message or call to action -->
 <div id="mask" style="position: absolute;background: #f5f5f5;width: 100%; height: 100%; opacity: 0.7;z-index:1000;">
@@ -48,37 +67,28 @@ require 'templates/header.tpl'; ?>
   </use>
   </svg> -->
   <!-- <img id="svg-loading" rel="loading_image" src="core/img/ajax-loader-black.svg"> -->
-  <embed id="svg-loading" src="core/img/ajax-loader-black.svg"/>
+  <embed id="svg-loading" src="core/img/loader-black.svg"/>
   </div>
 </div>
 <div id="content">
-  <div class="pageinfo jumbotron">
-    <div class="container">
-	<p class="font-weight-bold"><?php echo L('searching'); ?></p>
-    </div>
-  </div>
+	<div class="headerinfo container">
+		<div class="bd-note">
+		<h6 class="mb-0 lh-100">
+			<?php echo L('searching'); ?>
+		</h6>
+		</div>
+	</div>
 </div>
-
 <link href="core/css/search.css" rel="stylesheet">
 <script>
-  function search(start, page) {
-    var keyword = $.trim($('#search-input').val());
-    searchAll(keyword, "", "", start, page, 0);
-  }
-  function searchCategory(category, start, page) {
-    searchAll("", category, "", start, page, 0);
-  }
-  function searchTag(tag, start, page) {
-    searchAll("", "", tag, start, page, 0);
-  }
-  function searchAll(keyword, category, tag, start, page, myfavi) {
+  function searchAll(base, keyword, category, tag, start, page, favi, censor, sorts, display) {
     $("#mask").show();
     
     var url="query.php";
-    $.get(url, {"keyword" : keyword, "category" : category, "tag" : tag, "start" : start, "page" : page, "myfavi" : myfavi}, callback);
+    $.get(url, {"base" : base, "keyword" : keyword, "category" : category, "tag" : tag, "start" : start, "page" : page, "favi" : favi, "censor" : censor, "sorts" : sorts, "display" : display}, callback);
   }
   function callback(data) {
-	$("#mask").remove();
+	$("#mask").hide();
     $('#content').html(data);
     $(document).scrollTop(0);
     $('[data-toggle="tooltip"]').tooltip();
@@ -101,7 +111,7 @@ require 'templates/header.tpl'; ?>
 	    var myfavi = getQueryString("myfavi");
       if(page == '')
         page = 1;*/
-      <?php echo '$(\'#search-input\').val(\''.$keyword.'\');'; echo "searchAll('".$keyword."','".$category."','".$tag."',0,".$page.",".$myfavi.");";?>
+      <?php echo '$(\'#search-input\').val(\''.$keyword.'\');'; echo "searchAll('".$base."','".$keyword."','".$category."','".$tag."',0,".$page.",".$favi.",".$censor.",".$sorts.",".$display.");";?>
     }
   });
 </script>

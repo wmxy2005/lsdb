@@ -1,8 +1,11 @@
-<?php require_once 'core/init.php';
+<?php
+$skipAuth = true;
+require_once 'core/init.php';
 $title = L('speed_test');
+$main_menu[2]['active'] = 1;
 require 'templates/header.tpl'; ?>
 <style type="text/css">
-	#content{
+	#main{
 		text-align:center;
 		font-family:"Roboto",sans-serif;
 	}
@@ -138,13 +141,14 @@ function initUI(){
 	$("#progressBar").css("opacity","0");
 }
 </script>
-<div class="pageinfo jumbotron">
-	<div class="container">
-	<h4><?php echo L('speed_test'); ?></h4>
+<div id="content" class="container">
+<div class="headerinfo container">
+	<div class="bd-note">
+	<h4 class="mb-0 lh-100">
+		<span class="badge badge-pill badge-secondary"></span><?php echo L('speed_test'); ?></h4>
 	</div>
 </div>
-<div id="content" class="container">
-<div class="jumbotron">
+<div id="main" class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
 	<p><a id="startStopBtn" class="btn btn-lg" href="javascript:void();" onclick="startStop()" role="button"></a></p>
 	<br>
 	<div id="progressBar" class="progress" style="opacity: 0">
@@ -177,6 +181,9 @@ function initUI(){
 				<div id="jitText" class="meterText"></div>
 				<div class="unit">ms</div>
 			</div>
+		</div>
+		<div id="serverArea">
+			Server: <?php echo gethostbyname(''); ?>
 		</div>
 		<div id="ipArea">
 			IP Address: <span id="ip"></span>

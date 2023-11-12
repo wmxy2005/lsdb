@@ -26,7 +26,8 @@ if ($id > 0) {
 		$template->subcategory = $row['subcategory'];
 		$template->name = $row['name'];
 		$template->images = $row['images'];
-
+		
+		$template->main_menu = $main_menu;
 		echo $template;
 	} else {
 		header('Location: error');

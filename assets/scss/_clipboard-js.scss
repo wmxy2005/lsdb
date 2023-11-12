@@ -2,7 +2,8 @@
 //
 // JS-based `Copy` buttons for code snippets.
 
-.bd-clipboard {
+.bd-clipboard,
+.bd-edit {
   position: relative;
   display: none;
   float: right;
@@ -16,21 +17,28 @@
   }
 }
 
-.btn-clipboard {
-  position: absolute;
-  top: .5rem;
-  right: .5rem;
-  z-index: 10;
+.btn-clipboard,
+.btn-edit {
   display: block;
-  padding: .25rem .5rem;
-  @include font-size(75%);
-  color: #818a91;
-  background-color: transparent;
+  padding: .5em;
+  line-height: 1;
+  color: var(--bs-body-color);
+  background-color: var(--bd-pre-bg);
   border: 0;
-  @include border-radius;
+  @include border-radius(.25rem);
 
   &:hover {
-    color: $white;
-    background-color: #027de7;
+    color: var(--bs-link-hover-color);
   }
+
+  &:focus {
+    z-index: 3;
+  }
+}
+
+.btn-clipboard {
+  position: relative;
+  z-index: 2;
+  margin-top: 1.25rem;
+  margin-right: .75rem;
 }

@@ -1,78 +1,142 @@
-// stylelint-disable declaration-block-single-line-max-declarations, selector-class-pattern
-
-.hll { background-color: #ffc; }
-.c { color: #999; }
-.k { color: #069; }
-.o { color: #555; }
-.cm { color: #999; }
-.cp { color: #099; }
-.c1 { color: #999; }
-.cs { color: #999; }
-.gd { background-color: #fcc; border: 1px solid #c00; }
-.ge { font-style: italic; }
-.gr { color: #f00; }
-.gh { color: #030; }
-.gi { background-color: #cfc; border: 1px solid #0c0; }
-.go { color: #aaa; }
-.gp { color: #009; }
-.gu { color: #030; }
-.gt { color: #9c6; }
-.kc { color: #069; }
-.kd { color: #069; }
-.kn { color: #069; }
-.kp { color: #069; }
-.kr { color: #069; }
-.kt { color: #078; }
-.m { color: #f60; }
-.s { color: #d44950; }
-.na { color: #4f9fcf; }
-.nb { color: #366; }
-.nc { color: #0a8; }
-.no { color: #360; }
-.nd { color: #99f; }
-.ni { color: #999; }
-.ne { color: #c00; }
-.nf { color: #c0f; }
-.nl { color: #99f; }
-.nn { color: #0cf; }
-.nt { color: #2f6f9f; }
-.nv { color: #033; }
-.ow { color: #000; }
-.w { color: #bbb; }
-.mf { color: #f60; }
-.mh { color: #f60; }
-.mi { color: #f60; }
-.mo { color: #f60; }
-.sb { color: #c30; }
-.sc { color: #c30; }
-.sd { font-style: italic; color: #c30; }
-.s2 { color: #c30; }
-.se { color: #c30; }
-.sh { color: #c30; }
-.si { color: #a00; }
-.sx { color: #c30; }
-.sr { color: #3aa; }
-.s1 { color: #c30; }
-.ss { color: #fc3; }
-.bp { color: #366; }
-.vc { color: #033; }
-.vg { color: #033; }
-.vi { color: #033; }
-.il { color: #f60; }
-
-.css .o,
-.css .o + .nt,
-.css .nt + .nt { color: #999; }
-
-.language-bash::before,
-.language-sh::before {
-  color: #009;
-  content: "$ ";
-  user-select: none;
+:root,
+[data-bs-theme="light"] {
+  // --base00: #fff;
+  // --base01: #f5f5f5;
+  --base02: #c8c8fa;
+  --base03: #565c64;
+  --base04: #666;
+  --base05: #333;
+  --base06: #fff;
+  --base07: #{$teal-700}; // #9a6700
+  --base08: #{mix($red-500, $red-600, 50%)}; // #bc4c00
+  --base09: #{$cyan-700}; // #087990
+  --base0A: #{$purple-500}; // #795da3
+  --base0B: #{$blue-700}; // #183691
+  --base0C: #{$blue-700}; // #183691
+  --base0D: #{$purple-500}; // #795da3
+  --base0E: #{$pink-600}; // #a71d5d
+  --base0F: #333;
 }
 
-.language-powershell::before {
-  color: #009;
-  content: "PM> ";
-  user-select: none;
+@include color-mode(dark, true) {
+  // --base00: #282c34;
+  // --base01: #353b45;
+  --base02: #3e4451;
+  --base03: #868e96;
+  --base04: #868e96;
+  --base05: #abb2bf;
+  --base06: #b6bdca;
+  --base07: #{$orange-300}; // #d19a66
+  --base08: #{$cyan-300};
+  --base09: #{$orange-300}; // #d19a66
+  --base0A: #{$yellow-200}; // #e5c07b
+  --base0B: #{$teal-300}; // #98c379
+  --base0C: #{$teal-300}; // #56b6c2
+  --base0D: #{$blue-300}; // #61afef
+  --base0E: #{$indigo-200}; // #c678dd
+  --base0F: #{$red-300}; // #be5046
+
+  .language-diff .gd {
+    color: $red-400;
+  }
+  .language-diff .gi {
+    color: $green-400;
+  }
+}
+
+.hl { background-color: var(--base02); }
+.c { color: var(--base03); }
+.err { color: var(--base08); }
+.k { color: var(--base0E); }
+.l { color: var(----base09); }
+.n { color: var(--base08); }
+.o { color: var(--base05); }
+.p { color: var(--base05); }
+.cm { color: var(--base04); }
+.cp { color: var(--base08); }
+.c1 { color: var(--base03); }
+.cs { color: var(--base04); }
+.gd { color: var(--base08); }
+.ge { font-style: italic; }
+.gh {
+  font-weight: 600;
+  color: var(--base0A);
+}
+.gi { color: var(--bs-success); }
+.gp {
+  font-weight: 600;
+  color: var(--base04);
+}
+.gs { font-weight: 600; }
+.gu {
+  font-weight: 600;
+  color: var(--base0C);
+}
+.kc { color: var(--base0E); }
+.kd { color: var(--base0E); }
+.kn { color: var(--base0C); }
+.kp { color: var(--base0E); }
+.kr { color: var(--base0E); }
+.kt { color: var(--base0A); }
+.ld { color: var(--base0C); }
+.m { color: var(--base09); }
+.s { color: var(--base0C); }
+.na { color: var(--base0A); }
+.nb { color: var(--base05); }
+.nc { color: var(--base07); }
+.no { color: var(--base08); }
+.nd { color: var(--base07); }
+.ni { color: var(--base08); }
+.ne { color: var(--base08); }
+.nf { color: var(--base0B); }
+.nl { color: var(--base05); }
+.nn { color: var(--base0A); }
+.nx { color: var(--base0A); }
+.py { color: var(--base08); }
+.nt { color: var(--base08); }
+.nv { color: var(--base08); }
+.ow { color: var(--base0C); }
+.w { color: #fff; }
+.mf { color: var(--base09); }
+.mh { color: var(--base09); }
+.mi { color: var(--base09); }
+.mo { color: var(--base09); }
+.sb { color: var(--base0C); }
+.sc { color: #fff; }
+.sd { color: var(--base04); }
+.s2 { color: var(--base0C); }
+.se { color: var(--base09); }
+.sh { color: var(--base0C); }
+.si { color: var(--base09); }
+.sx { color: var(--base0C); }
+.sr { color: var(--base0C); }
+.s1 { color: var(--base0C); }
+.ss { color: var(--base0C); }
+.bp { color: var(--base05); }
+.vc { color: var(--base08); }
+.vg { color: var(--base08); }
+.vi { color: var(--base08); }
+.il { color: var(--base09); }
+
+// Color commas in rgba() values
+.m + .o { color: var(--base03); }
+
+// Fix bash
+.language-sh .c { color: var(--base03); }
+
+.chroma {
+  .language-bash,
+  .language-sh {
+    .line::before {
+      color: var(--base03);
+      content: "$ ";
+      user-select: none;
+    }
+  }
+
+  .language-powershell::before {
+    color: var(--base0C);
+    content: "PM> ";
+    user-select: none;
+  }
 }

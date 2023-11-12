@@ -1,8 +1,10 @@
 <?php require_once 'core/config.php';
+require_once('lib/simple_html_dom.php');
+
 $proc_total = 0;
 $proc = 0;
-$item_check = true;
-ini_set('max_execution_time','3000');
+$item_check = false;
+ini_set('max_execution_time','36000');
 $time_start = microtime(true);
 $time_current = $time_start;
 ob_start();
@@ -19,13 +21,13 @@ $appendfilename = $conf['appendfilename'];
 $baseDir = $folder . DIR_SEP . $base;
 $pdo = new \PDO('sqlite:'. $dbname);
 $appendFile = $baseDir . DIR_SEP . $appendfilename;
-
+	
 function getDir($pdo, $dir, $base, $category, $subcategory, $update) {
     if (false != ($handle = opendir ( $dir ))) {
         while ( false !== ($file = readdir ( $handle )) ) {
             if ($file != "." && $file != ".." && !strpos($file,".")) {
                 if (false != ($dirHandle = opendir ( $dir . DIR_SEP . $file))) {
-                    processDetail($pdo, $base, $dir, $category, $subcategory, $file, $update);
+                    processDetail($pdo, $base, $dir, $category, $subcategory, $file, $update, 100);
                 }
             }
         }
@@ -33,7 +35,7 @@ function getDir($pdo, $dir, $base, $category, $subcategory, $update) {
     }
 }
 
-function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $update) {
+function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $update, $progress) {
     $currentDir = $file;
     global $proc_total;
 	global $item_check;
@@ -42,10 +44,11 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
     global $time_start;
     global $time_current;
     $time_current = microtime(true);
-    if(round($time_current - $time_start, 1) >= 0.2) {
+    if(round($time_current - $time_start, 1) >= 0.1) {
         $time_start = $time_current;
         $result = array(
-            'msg'=> "已处理 " . $proc_total. ", 正在处理 " . $currentDir
+            'msg'=> "已处理 " . $proc_total. ", 正在处理 " . $currentDir,
+            'progress'=> $progress
         );
         echo "\n" . json_encode($result);
         ob_flush();
@@ -71,6 +74,7 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
     $tag = "";
     $content = "";
     $images = "";
+	$censored = "0";
 
     $dirHandle = opendir ( $dir . DIR_SEP . $file);
     if($dirHandle) {
@@ -86,6 +90,9 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
                     } else if ($line == 3) {
                         $date = $file_arr[$line];
                         $date = date('Y-m-d',strtotime($date));
+					} else if ($line == 4) {
+						if(!empty($file_arr[$line]))
+							$censored = "1";
                     }
                 }
             } else if (strpos($dirFile,"_src.txt")) {
@@ -119,10 +126,10 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
     }
     }
     if($item_id > 0) {
-        $pdo->exec("update items set name='".$name."',title='". $title."',date='".$date."',thumbnail='".$thumbnail."',tag='".$tag."',content='".$content."',images='".$images."' where id = ". $item_id);
+        $pdo->exec("update items set name='".$name."',title='". $title."',date='".$date."',thumbnail='".$thumbnail."',tag='".$tag."',content='".$content."',images='".$images."',censored=".$censored." where id = ". $item_id);
     } else {
         $pdo->exec("delete from items where base = '". $base ."' and category = '". $category . "' and subcategory = '". $subcategory ."' and name = '". $file ."'");
-        $res = $pdo->exec("insert into items(base, category, subcategory, name, title, date, thumbnail, tag, content, images) values('". $base ."','". $category . "','". $subcategory ."','". $name ."','". $title."', '". $date."', '". $thumbnail ."','". $tag ."', '". $content . "','". $images ."')");
+        $res = $pdo->exec("insert into items(base, category, subcategory, name, title, date, thumbnail, tag, content, images, censored) values('". $base ."','". $category . "','". $subcategory ."','". $name ."','". $title."', '". $date."', '". $thumbnail ."','". $tag ."', '". $content . "','". $images . "', " . $censored . ")");
     }
     closedir ( $dirHandle );
 }
@@ -146,9 +153,114 @@ function getFile($dir) {
     return $fileArray;
 }
 
-if($appendMode) {
+if(array_key_exists("id",$_POST)) {
+	$itemId = $_POST['id'];
+	if($itemId > 0) {
+		$sql = "SELECT * FROM items where id = ". $itemId;
+		$result = $pdo->query($sql);
+		if ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
+			$category = $row['category'];
+			$subCategory = $row['subcategory'];
+			$name = $row['name'];
+
+			$dir = $baseDir . DIR_SEP . $category . (empty($subCategory) ? '' : DIR_SEP . $subCategory);
+			
+			$html_name = $dir . DIR_SEP . $name . DIR_SEP . $name . '.html';
+			$html_string = file_get_contents($html_name);
+			$html = str_get_html($html_string);
+
+			$src_name = $dir . DIR_SEP . $name . DIR_SEP . 'img_src' . '.txt';
+			$src_string = '';
+			if(file_exists($src_name)) {
+				$src_string = file_get_contents($src_name);
+			}
+			if($src_string == null || $src_string == '') {
+				$src_file = fopen($src_name, "w");
+				$src_element = 'img';
+				foreach ($html->find($src_element) as $element) {
+					$src = $element->src;
+					if ($src != '') {
+						$lastIndex = strrpos($src, '/');
+						$img_name = substr($src, $lastIndex+1);
+						fwrite($src_file, $img_name . ':' . $src . PHP_EOL);
+					}
+				}
+				fclose($src_file);
+			}
+			
+			if (1 == 2) {
+				$src_arr = file($src_name);
+				for($line = 0; $line < count($src_arr); $line++){
+					$str = $src_arr[$line];
+					if($str != "") {
+						$index = strpos($str,":");
+						if($index) {
+							$image = substr($str, 0, $index);
+							$url = substr($str, $index + 1);
+							$img_file = $dir . DIR_SEP . $name . DIR_SEP . $image;
+							if(!file_exists($img_file)) {
+								echo $url;
+								$url = str_replace("https","http", $url);
+								$downSuccess = false;
+								$downMsg = '';
+								/*
+								try {
+									$arrContextOptions = array(
+										"ssl"=>array(
+											"verify_peer"=>false,
+											"verify_peer_name"=>false,
+										),
+									);
+									$content = file_get_contents($url, false, stream_context_create($arrContextOptions));
+									file_put_contents($image, $content);
+								}
+								catch(Exception $e) {
+									echo 'Failed to download ' . $url;
+								}
+								*/
+								$ch=curl_init();
+								curl_setopt($ch, CURLOPT_URL, trim($url));
+								curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+								curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36');
+								curl_setopt($ch, CURLOPT_REFERER, 'http://javfree.me');
+								curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+								curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+								curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+								curl_setopt($curl, CURLOPT_SSL_VERIFYSTATUS, false);
+								$result=curl_exec($ch);
+								if($result === FALSE){
+									$downMsg = curl_error($ch);
+								} else {
+									file_put_contents($img_file, $result);
+									$downSuccess = true;
+								}
+								curl_close($ch);
+								if(!$downSuccess) {
+									$result = array(
+										'msg'=> $downMsg,
+										'progress'=> $progress
+									);
+									echo "\n" . json_encode($result);
+									ob_flush();
+									flush();
+									return;
+								}
+							}
+						}
+					}
+				}
+			}
+			$cmd_str = 'python ' . $conf['pyfolder'] . ' ' . $category . ' ' . $subCategory . ' ' . trim($name);
+			echo $cmd_str;
+			exec($cmd_str);
+			processDetail($pdo, $base, $dir, $category, $subCategory, trim($name), true, 0);
+		}
+	}
+} else if($appendMode) {
     $append_attr = file($appendFile);
-    for($line = 0; $line < count($append_attr); $line++) {
+    $progress = 0;
+    $count = count($append_attr);
+    for($line = 0; $line < $count; $line++) {
         $str = $append_attr[$line];
         if($str != "") {
             $result = preg_split('/,/s', $str,3);
@@ -158,7 +270,8 @@ if($appendMode) {
                 $name = $result[2];
 
                 $dir = $baseDir . DIR_SEP . $category . (empty($subCategory) ? '' : DIR_SEP . $subCategory);
-                processDetail($pdo, $base, $dir, $category, $subCategory, trim($name), true);
+                $progress = round($line*100/$count, 0);
+                processDetail($pdo, $base, $dir, $category, $subCategory, trim($name), true, $progress);
             }
         }
     }
@@ -186,7 +299,8 @@ if($appendMode) {
 }
 $pdo = null;
 $result = array(
-    'msg'=> "已处理" . $proc_total . ", 操作完成！"
+    'msg'=> "已处理" . $proc_total . ", 操作完成！",
+    'progress'=> 100
 );
 echo "\n" . json_encode($result);
 ?>

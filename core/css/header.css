@@ -7,19 +7,43 @@ html {
 body  {
   padding: 0em 0em 6em;
 }
+a.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
 .pageinfo  {
   padding: 100px 0px 10px;
 }
-.navbar-nav>a {
+.headerinfo  {
+  padding: 0px 5px;
+}
+.bd-note{
+	padding: 1.25rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #eee;
+    border-left-width: .25rem;
+    border-radius: .25rem;
+	border-left-color: #de5833;
+	background-color: #f8f9fa;
+}
+.nav-item>a {
 	color: #343a40;
+	text-decoration: none;
 }
-.navbar-nav>a:hover {
+.nav-item>a:hover {
 	color: #de5833;
+	text-decoration: underline;
 }
-/*
+.nav-item>a.active {
+    border-bottom: 2px solid #de5833;
+    font-weight: 700;
+    color: #323232;
+}
 #content{
-  padding: 80px 0px 50px;
-}*/
+  padding: 70px 0px 50px;
+}
 .footer {
   position: absolute;
   bottom: 0;
@@ -43,6 +67,12 @@ code {
   font-size: 80%;
 }
 
+.glyphicon-calendar{
+	color: #6c757d !important;
+}
+.badge {
+  text-decoration: none;
+}
 
 /* Custom page CSS
 -------------------------------------------------- */
@@ -51,7 +81,7 @@ code {
 .header {
     line-height: 30px;
     border-bottom: 1px solid #dbdbdb;
-    /*padding: 10px 10% 10px 10px;*/
+    #padding: 10px 10% 10px 10px;
     background-color: #f1f1f1;
     /*background-color: #545454;*/
     /*background-color: #636363;*/
@@ -80,8 +110,13 @@ code {
 .header .search-area {
     float: left;
     margin: 0;
-    padding: 5px;
-    max-width: 25em
+	width: 50%;
+}
+
+@media all and (max-width:767.98px){
+.header .search-area {
+	width: 100%;
+}
 }
 
 .header .search-form {
@@ -93,13 +128,6 @@ code {
 .header .search-btn:hover {
     background: #de5833;
     color: #fff
-}
-
-.search-area {
-    margin: 0 auto;
-    max-width: 700px;
-    width: 70%;
-    margin-top: 30px
 }
 
 .search-form {
@@ -163,7 +191,16 @@ code {
 .site-wrapper-border {
     background-color: #de5833;
     height: 5px;
+	width:100%;
     top: 0;
+}
+.top-loading{
+	animation: border-loading 0.5s linear;
+}
+@keyframes border-loading{
+0%,10% {width: 0;}
+70% {width: 0.5;}
+100% {width: 1;}
 }
 
 .mask {       
@@ -192,7 +229,4 @@ code {
 0%,30% {opacity: 0;}
 60% {opacity: 1;}
 100% {opacity: 0;}
-}
-.glyphicon-calendar{
-	color: #6c757d !important;
 }

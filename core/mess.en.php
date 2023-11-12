@@ -13,9 +13,14 @@ function getMess() {
 	   'append_mode'=>'Append mode',
 	   'start'=>'Start',
 	   'running'=>'Running...',
+	   'update'=>'Update',
+	   'updating'=>'Updating...',
 	   'abort'=>'Abort',
 	   'speedtest'=>'Speedtest',
 	   'speed_test'=>'Speed testing',
+	   'tools'=>'Tools',
+	   'shutdown'=>'Shutdown',
+	   'restart'=>'Restart',
 	   'search' =>'Search',
 	   'searching' =>'Search...',
 	   'total_mess'=>'Total %1% record(s), %2% page(s)',
@@ -23,7 +28,16 @@ function getMess() {
 	   'time_cost'=>'Time Cost',
 	   'prev'=>'Prev',
 	   'next'=>'Next',
-	   'not_found'=>'Resources not found'
+	   'not_found'=>'Resources not found',
+	   'all'=>'All',
+	   'uncensored'=>'No',
+	   'censored'=>'Yes',
+	   'default'=>'Default',
+	   'date'=>'Date',
+	   'create_date_asc'=>'By Created Date',
+	   'modify_date'=>'Modified Date',
+	   'multi_col'=>'Multiple',
+	   'single_col'=>'Single'
    );
    return $mess;
 }

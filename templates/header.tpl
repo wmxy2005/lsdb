@@ -13,32 +13,48 @@
     <!-- Bootstrap core CSS -->
     <link href="dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
+	<link href="core/css/glyphicons.css" rel="stylesheet">
     <link href="core/css/header.css" rel="stylesheet">
     <link href="core/css/signin.css" rel="stylesheet">
 	
 	<script>window.jQuery || document.write('<script src="assets/js/vendor/jquery.min.js"><\/script>')</script>
+	<script>
+		$(document).ready(function(){
+			$("#fixed-top").removeClass("top-loading");
+		});
+	</script>
   </head>
 <body>
-<div class="site-wrapper-border fixed-top"></div>
+<div id="fixed-top" class="site-wrapper-border fixed-top top-loading"></div>
 
-<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top header" role="navigation">
+<nav class="navbar navbar-expand-md bg-body-tertiary fixed-top header" role="navigation">
   <div class="container">
     <a href="search"><img style="max-height: 50px" src="core/img/logo.svg" alt="LSDB LOGO" class="logo"></a>
-    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarNav"
-    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mr-auto">
-		<a class="p-2" href="search?myfavi=1"><?php echo L('favi'); ?></a>
-        <a class="p-2" href="install"><?php echo L('install'); ?></a>
-        <a class="p-2" href="speedtest"><?php echo L('speedtest'); ?></a>
-        <!-- <a class="p-2"  href="javascript:void(0);" onclick="login()">Login</a> -->
+      <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+		<?php
+		for ($row=0; $row < count($main_menu); $row++) {
+		$item = $main_menu[$row];
+		?>
+		<li class="nav-item"><a class="nav-link <?php echo !empty($item['active'])?'active':''; ?>" href="<?php echo $item['href']; ?>"><span><?php echo $item['mess']; ?></span></a></li>
+		<?php
+		}
+		?>
       </ul> 
 
       <div class="search-area">
         <form id="search-form" action="search" class="my-search navbar-right search-form" onsubmit="">
-        <input id="search-input" class="search-input" aria-label="search" title="LSDB Search" placeholder="<?php echo L('search'); ?>" name="q" maxlength="2048" aria-haspopup="false" role="combobox" aria-autocomplete="both" spellcheck="false" autocomplete="off" type="search">
+		<?php if (isset($favi) && $favi > 0) {
+		?>
+		<input id="extra-param" name="favi" value="1" hidden="true"/>
+		<?php
+		}
+		?>
+		<input id="search-input" class="search-input" aria-label="search" title="LSDB Search" placeholder="<?php echo L('search'); ?>" name="q" maxlength="2048" aria-haspopup="false" role="combobox" aria-autocomplete="both" spellcheck="false" autocomplete="off" type="search">
         <button class="search-btn" onclick="">
           <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
         </button>
