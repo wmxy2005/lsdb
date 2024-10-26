@@ -5,7 +5,7 @@ $keyword = '';
 $tag = '';
 $category = '';
 $favi = 0;
-$censor = 2;
+$type = 999;
 $sorts = 0;
 $display = 0;
 $base = '';
@@ -30,8 +30,8 @@ if(array_key_exists('category', $queries)) {
 if(array_key_exists('favi', $queries)) {
 	$favi = $queries['favi'];
 }
-if(array_key_exists('censor', $queries)) {
-	$censor = $queries['censor'];
+if(array_key_exists('type', $queries)) {
+	$type = $queries['type'];
 }
 if(array_key_exists('sorts', $queries)) {
 	$sorts = $queries['sorts'];
@@ -81,11 +81,11 @@ require 'templates/header.tpl'; ?>
 </div>
 <link href="core/css/search.css" rel="stylesheet">
 <script>
-  function searchAll(base, keyword, category, tag, start, page, favi, censor, sorts, display) {
+  function searchAll(base, keyword, category, tag, start, page, favi, type, sorts, display) {
     $("#mask").show();
     
     var url="query.php";
-    $.get(url, {"base" : base, "keyword" : keyword, "category" : category, "tag" : tag, "start" : start, "page" : page, "favi" : favi, "censor" : censor, "sorts" : sorts, "display" : display}, callback);
+    $.get(url, {"base" : base, "keyword" : keyword, "category" : category, "tag" : tag, "start" : start, "page" : page, "favi" : favi, "type" : type, "sorts" : sorts, "display" : display}, callback);
   }
   function callback(data) {
 	$("#mask").hide();
@@ -111,7 +111,7 @@ require 'templates/header.tpl'; ?>
 	    var myfavi = getQueryString("myfavi");
       if(page == '')
         page = 1;*/
-      <?php echo '$(\'#search-input\').val(\''.$keyword.'\');'; echo "searchAll('".$base."','".$keyword."','".$category."','".$tag."',0,".$page.",".$favi.",".$censor.",".$sorts.",".$display.");";?>
+      <?php echo '$(\'#search-input\').val(\''.$keyword.'\');'; echo "searchAll('".$base."','".$keyword."','".$category."','".$tag."',0,".$page.",".$favi.",".$type.",".$sorts.",".$display.");";?>
     }
   });
 </script>

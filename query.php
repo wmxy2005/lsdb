@@ -1,5 +1,5 @@
-<?php require_once 'core/init.php';
-require_once 'core/config.php';
+<?php include 'core/init.php';
+#require_once 'core/config.php';
 require_once 'core/template.php';
 $time_start = microtime(true);
 $start = 0;
@@ -8,7 +8,7 @@ $keyword = '';
 $tag = '';
 $category = '';
 $favi = 0;
-$censor = 2;
+$type = 999;
 $sorts = 0;
 $display = 0;
 $base = '';
@@ -32,8 +32,8 @@ if(array_key_exists('category', $queries)) {
 if(array_key_exists('favi', $queries)) {
 	$favi = $queries['favi'];
 }
-if(array_key_exists('censor', $queries)) {
-	$censor = $queries['censor'];
+if(array_key_exists('type', $queries)) {
+	$type = $queries['type'];
 }
 if(array_key_exists('sorts', $queries)) {
 	$sorts = $queries['sorts'];
@@ -74,10 +74,10 @@ if(!empty($tag)) {
 }
 if(!empty($category))
 	$cond = $cond . " and a.category like '%" . $category ."%'";
-if($censor == 0) {
-	$cond = $cond . " and (a.censored = 0 or a.censored isnull)";
-}else if($censor == 1){
-	$cond = $cond . " and a.censored = 1";
+if($type == 0) {
+	$cond = $cond . " and (a.type = 0 or a.type isnull)";
+}else if($type < 99){
+	$cond = $cond . " and a.type = " . $type;
 }
 
 $sort_cond = "";
@@ -132,7 +132,7 @@ $template->start = $start;
 $template->page = $page;
 $template->toalPage = $toalPage;
 $template->favi = $favi;
-$template->censor = $censor;
+$template->type = $type;
 $template->total_mess = $total_mess;
 $template->category = $category;
 $template->tag = $tag;
@@ -141,55 +141,55 @@ $template->keyword = $keyword;
 $time_cost = round(microtime(true) - $time_start, 3);
 $template->timeCost = $time_cost . "s";
 
-$consor_list = array();
-$consor0 = array();
-$consor0['mess'] = L('all');
-if($censor > 1){
-	$consor0['active'] = 1;
+$type_list = array();
+$typeAll = array();
+$typeAll['mess'] = L('all');
+if($type > 99){
+	$typeAll['active'] = 1;
 }
-$consor0['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, 2, $sorts, $display);
-array_push($consor_list, $consor0);
-$consor1 = array();
-$consor1['mess'] = L('uncensored');
-if($censor == 0){
-	$consor1['active'] = 1;
+$typeAll['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, 999, $sorts, $display);
+array_push($type_list, $typeAll);
+$typeList = Config::$typeList;
+for($i=0; $i < sizeof($typeList); $i=$i+1) {
+	$typeItem = $typeList[$i];
+	$typeNew = array();
+	$typeNew['mess'] = L($typeItem['mess']);
+	if($type == $typeItem['type']){
+		$typeNew['active'] = 1;
+	}
+	$typeNew['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, $typeItem['type'], $sorts, $display);
+	array_push($type_list, $typeNew);
 }
-$consor1['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, 0, $sorts, $display);
-array_push($consor_list, $consor1);
-$consor2 = array();
-$consor2['mess'] = L('censored');
-if($censor == 1){
-	$consor2['active'] = 1;
-}
-$consor2['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, 1, $sorts, $display);
-array_push($consor_list, $consor2);
-$template->consor_list = $consor_list;
+$template->type_list = $type_list;
 
 $base_list = array();
 $base0 = array();
 $base0['mess'] = L('all');
-$base0['href'] = queryString('', $keyword, $tag, $category, $start, 1, $favi, $censor, 0, $display);
+$base0['href'] = queryString('', $keyword, $tag, $category, $start, 1, $favi, $type, 0, $display);
 if($base == ''){
 $base0['active'] = 1;
 $template->base_name = L('all');
 }
 array_push($base_list, $base0);
-$base1 = array();
-$base1['mess'] = 'wallpaper';
-$base1['href'] = queryString('wallpaper', $keyword, $tag, $category, $start, 1, $favi, $censor, 0, $display);
-if($base == 'wallpaper'){
-$base1['active'] = 1;
-$template->base_name = 'wallpaper';
+$baseList = Config::$baseList;
+for($i=0; $i < sizeof($baseList); $i=$i+1) {
+	$baseItem = $baseList[$i];
+	$base1 = array();
+	$base1['mess'] = $baseItem['mess'];
+	$base1['href'] = queryString($baseItem['name'], $keyword, $tag, $category, $start, 1, $favi, $type, 0, $display);
+	if($base == $baseItem['name']){
+		$base1['active'] = 1;
+		$template->base_name = $base1['mess'];
+	}
+	array_push($base_list, $base1);
 }
-array_push($base_list, $base1);
-
 $template->base = $base;
 $template->base_list = $base_list;
 
 $sort_list = array();
 $sort_item0 = array();
 $sort_item0['mess'] = L('default');
-$sort_item0['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, $censor, 0, $display);
+$sort_item0['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, $type, 0, $display);
 if($sorts == 0){
 $sort_item0['active'] = 1;
 $template->sort_name = L('default');
@@ -197,7 +197,7 @@ $template->sort_name = L('default');
 array_push($sort_list, $sort_item0);
 $sort_item1 = array();
 $sort_item1['mess'] = L('create_date_asc');
-$sort_item1['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, $censor, 1, $display);
+$sort_item1['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, $type, 1, $display);
 if($sorts == 1){
 $sort_item1['active'] = 1;
 $template->sort_name = L('create_date_asc');
@@ -209,7 +209,7 @@ $template->sorts = $sorts;
 $display_list = array();
 $display_item0 = array();
 $display_item0['mess'] = L('multi_col');
-$display_item0['href'] = queryString($base, $keyword, $tag, $category, $start, $page, $favi, $censor, $sorts, 0);
+$display_item0['href'] = queryString($base, $keyword, $tag, $category, $start, $page, $favi, $type, $sorts, 0);
 if($display == 0){
 $display_item0['active'] = 1;
 $template->display_name = L('multi_col');
@@ -217,7 +217,7 @@ $template->display_name = L('multi_col');
 array_push($display_list, $display_item0);
 $display_item1 = array();
 $display_item1['mess'] = L('single_col');
-$display_item1['href'] = queryString($base, $keyword, $tag, $category, $start, $page, $favi, $censor, $sorts, 1);
+$display_item1['href'] = queryString($base, $keyword, $tag, $category, $start, $page, $favi, $type, $sorts, 1);
 if($display == 1){
 $display_item1['active'] = 1;
 $template->display_name = L('single_col');

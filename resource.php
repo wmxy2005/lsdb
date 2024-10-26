@@ -1,4 +1,4 @@
-<?php
+<?php include 'core/init.php';
 const DIR_SEP = DIRECTORY_SEPARATOR;
 function getDir($dir) {
     $dirArray[]=NULL;
@@ -34,7 +34,6 @@ function getFile($dir) {
     return $fileArray;
 }
 
-require_once 'core/config.php';
 $conf = Config::$config;
 $folder = $conf['folder'];
 
@@ -63,7 +62,7 @@ if (!empty($name)) {
         header('Content-type: image/jpeg');
         echo $filer;
     } else {
-        include 'core/img/image-not-found.png';
+        include 'core/img/image-not-found.jpg';
     }
 }
 ?>

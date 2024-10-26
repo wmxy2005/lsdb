@@ -74,7 +74,7 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
     $tag = "";
     $content = "";
     $images = "";
-	$censored = "0";
+	$type = "0";
 
     $dirHandle = opendir ( $dir . DIR_SEP . $file);
     if($dirHandle) {
@@ -91,8 +91,13 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
                         $date = $file_arr[$line];
                         $date = date('Y-m-d',strtotime($date));
 					} else if ($line == 4) {
-						if(!empty($file_arr[$line]))
-							$censored = "1";
+						if(!empty($file_arr[$line])) {
+							$type = "1";
+							$flag = trim($file_arr[$line]);
+							if($flag == "fc2") {
+								$type = "2";
+							}
+						}
                     }
                 }
             } else if (strpos($dirFile,"_src.txt")) {
@@ -126,10 +131,10 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
     }
     }
     if($item_id > 0) {
-        $pdo->exec("update items set name='".$name."',title='". $title."',date='".$date."',thumbnail='".$thumbnail."',tag='".$tag."',content='".$content."',images='".$images."',censored=".$censored." where id = ". $item_id);
+        $pdo->exec("update items set name='".$name."',title='". $title."',date='".$date."',thumbnail='".$thumbnail."',tag='".$tag."',content='".$content."',images='".$images."',type=".$type." where id = ". $item_id);
     } else {
         $pdo->exec("delete from items where base = '". $base ."' and category = '". $category . "' and subcategory = '". $subcategory ."' and name = '". $file ."'");
-        $res = $pdo->exec("insert into items(base, category, subcategory, name, title, date, thumbnail, tag, content, images, censored) values('". $base ."','". $category . "','". $subcategory ."','". $name ."','". $title."', '". $date."', '". $thumbnail ."','". $tag ."', '". $content . "','". $images . "', " . $censored . ")");
+        $res = $pdo->exec("insert into items(base, category, subcategory, name, title, date, thumbnail, tag, content, images, type) values('". $base ."','". $category . "','". $subcategory ."','". $name ."','". $title."', '". $date."', '". $thumbnail ."','". $tag ."', '". $content . "','". $images . "', " . $type . ")");
     }
     closedir ( $dirHandle );
 }

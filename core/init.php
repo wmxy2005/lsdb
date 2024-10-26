@@ -1,4 +1,4 @@
-<?php require_once 'core/config.php';
+<?php require_once 'core/config.my.php';
 require_once 'core/mess.php';
 $conf = Config::$config;
 $lang = $conf['lang'];
@@ -66,12 +66,12 @@ $menu3['mess'] = L('tools');
 $menu3['href'] = 'tools';
 array_push($main_menu, $menu3);
 
-function queryString($base, $keyword, $tag, $category, $start, $page, $favi, $censor, $sorts, $display) {
+function queryString($base, $keyword, $tag, $category, $start, $page, $favi, $type, $sorts, $display) {
 	$qString = 'search';
 	$data = array();
-	if(!is_null($censor)){
-		if($censor <= 1)
-			$data["censor"] = $censor;
+	if(!is_null($type)){
+		if($type <= 99)
+			$data["type"] = $type;
 	}
 	if(!empty($sorts))
 		$data["sorts"] = $sorts;

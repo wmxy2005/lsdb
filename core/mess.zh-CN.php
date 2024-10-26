@@ -30,8 +30,6 @@ function getMess() {
 	   'next'=>'下一页',
 	   'not_found'=>'资源未找到',
 	   'all'=>'全部',
-	   'uncensored'=>'无',
-	   'censored'=>'有',
 	   'default'=>'默认',
 	   'date'=>'日期',
 	   'create_date_asc'=>'创建从早到晚',

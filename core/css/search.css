@@ -163,6 +163,9 @@ img.cover {
   position: relative;
   max-height: 20em
 }
+#navbarNavDropdownStyle > .navbar-nav {
+	display: none;
+}
 }
 img.onecover {
   position: relative;

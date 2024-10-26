@@ -30,8 +30,6 @@ function getMess() {
 	   'next'=>'Next',
 	   'not_found'=>'Resources not found',
 	   'all'=>'All',
-	   'uncensored'=>'No',
-	   'censored'=>'Yes',
 	   'default'=>'Default',
 	   'date'=>'Date',
 	   'create_date_asc'=>'By Created Date',
