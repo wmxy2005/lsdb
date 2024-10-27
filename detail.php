@@ -26,6 +26,7 @@ if ($id > 0) {
 		$template->subcategory = $row['subcategory'];
 		$template->name = $row['name'];
 		$template->images = $row['images'];
+		$template->folder = $conf['folder'];
 		
 		$template->main_menu = $main_menu;
 		echo $template;

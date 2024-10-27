@@ -55,6 +55,7 @@ function exec(msg){
 			"cmd":msg
 		},
 		success: function (response) {
+			console.log(response);
 		},
 		error: function (response) {
 			alert('failed');

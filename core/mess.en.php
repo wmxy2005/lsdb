@@ -15,6 +15,7 @@ function getMess() {
 	   'running'=>'Running...',
 	   'update'=>'Update',
 	   'updating'=>'Updating...',
+	   'open'=>'Open',
 	   'abort'=>'Abort',
 	   'speedtest'=>'Speedtest',
 	   'speed_test'=>'Speed testing',

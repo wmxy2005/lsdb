@@ -1,4 +1,4 @@
-<?php require_once 'core/config.php';
+<?php require_once 'core/init.php';
 $proc_total = 0;
 $proc = 0;
 $item_check = false;

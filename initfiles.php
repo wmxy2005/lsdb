@@ -1,4 +1,4 @@
-<?php require_once 'core/config.php';
+<?php require_once 'core/init.php';
 require_once('lib/simple_html_dom.php');
 
 $proc_total = 0;
@@ -131,7 +131,7 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
     }
     }
     if($item_id > 0) {
-        $pdo->exec("update items set name='".$name."',title='". $title."',date='".$date."',thumbnail='".$thumbnail."',tag='".$tag."',content='".$content."',images='".$images."',type=".$type." where id = ". $item_id);
+        $pdo->exec("update items set name='".$name."',title='". $title."',date='".$date."',thumbnail='".$thumbnail."',tag='".$tag."',content='".$content."',images='".$images."' where id = ". $item_id);
     } else {
         $pdo->exec("delete from items where base = '". $base ."' and category = '". $category . "' and subcategory = '". $subcategory ."' and name = '". $file ."'");
         $res = $pdo->exec("insert into items(base, category, subcategory, name, title, date, thumbnail, tag, content, images, type) values('". $base ."','". $category . "','". $subcategory ."','". $name ."','". $title."', '". $date."', '". $thumbnail ."','". $tag ."', '". $content . "','". $images . "', " . $type . ")");

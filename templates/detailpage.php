@@ -12,7 +12,7 @@ echo '<br/>' . $base.' · '. $category . (empty($subcategory)?'':' · ' . $subca
 </p>
 <div class="fs-5">
 <?php
-$categoryUrl = queryString('', '', $subcategory, $category, 0, 0, 0, 2, 0, 0);
+$categoryUrl = queryString('', '', $subcategory, $category, 0, 0, 0, 999, 0, 0);
 $categoryName = empty($subcategory) ? $category : $subcategory;
 echo (empty($subcategory) ? '<a class="badge text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill" href="'.$categoryUrl.'">'. $category .'</a> '
 			: '<a class="badge text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-pill" href="'. $categoryUrl.'">'. $subcategory .'</a> ');
@@ -35,6 +35,7 @@ for ($i=0; $i < count($tags); $i++) {
 <?php echo L('update'); ?>
 </div>
 </a>
+<a id="open-floder" class="badge text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-pill" href="javascript:void(0);"><?php echo L('open'); ?></a>
 <br/>
 </div>
 </div>
@@ -61,7 +62,7 @@ $('#add-plus').on('click', function() {
 		url: "initfiles.php",
 		data : {
 			"appendmode":true,
-			"id":<?php echo $id; ?>
+			"id": <?php echo $id; ?>
 		},
 		success: function (response) {
 			$('#add-plus').removeClass("disabled");
@@ -76,6 +77,29 @@ $('#add-plus').on('click', function() {
 			('#add-plus').removeClass("disabled");
 			$('#add-loading').hide();
 			$('#add-icon').show();
+			alert('failed');
+		}
+	});
+});
+$('#open-floder').on('click', function() {
+	$('#open-floder').addClass("disabled");
+	$.ajax({
+		type: "POST",
+		url: "exec.php",
+		data : {
+			"id": <?php echo $id; ?>,
+			"cmd": <?php
+			const DIR_SEP = DIRECTORY_SEPARATOR;
+			$filepath = $folder. DIR_SEP. $base . DIR_SEP . (empty($category) ? "" : $category . DIR_SEP) . (empty($subcategory) ? "" : $subcategory . DIR_SEP) . $name;
+			echo '"explorer ' . urlencode($filepath) . '"';
+			?>
+		},
+		success: function (response) {
+			console.log(response);
+			$('#open-floder').removeClass("disabled");
+		},
+		error: function (response) {
+			('#open-floder').removeClass("disabled");
 			alert('failed');
 		}
 	});

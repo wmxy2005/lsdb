@@ -3,7 +3,7 @@ if(array_key_exists("id",$_POST) && array_key_exists("favi",$_POST)) {
 $itemId = $_POST['id'];
 $isItemFavi = ("true" == $_POST['favi'] ? true : false);
 if($itemId > 0) {
-	require_once 'core/config.php';
+	require_once 'core/init.php';
 	$conf = Config::$config;
 	$dbname = $conf['dbname'];
 	$pdo = new \PDO('sqlite:'. $dbname);

@@ -15,6 +15,7 @@ function getMess() {
 	   'running'=>'运行中...',
 	   'update'=>'更新',
 	   'updating'=>'更新中...',
+	   'open'=>'打开',
 	   'abort'=>'取消',
 	   'speedtest'=>'测速',
 	   'speed_test'=>'网速测试',

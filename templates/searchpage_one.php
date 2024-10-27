@@ -101,25 +101,25 @@ $item = $type_list[$row];
 	</div>
 </div>
 <div class="container">
-<div class="row" style="display:flex; flex-wrap: wrap;">
+
 <?php
 for ($row=0; $row < count($res); $row++) {
 $item = $res[$row];
 ?>
 <div class="col-sm-12 col-md-12 col-lg-12" style="padding-left:5px;padding-right:5px;">
 <div class="row no-gutters rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative thumbnail">
-     <div class="row no-gutters"style="width:100%">
-      	<div class="col-md-8">
+     
+      	<div class="col-md-8" style="padding: 0;">
 		<a class="text-center" href="detail?id=<?php echo $item['id']; ?>">
 			<img class="img-fluid onecover" src="<?php echo 'resource?base='. $item['base'].'&cata='. $item['category'] .'&subcata='.$item['subcategory'].'&name='. $item['name'].'&filename='. $item['thumbnail']; ?>">
 		</a>
 		</div>
 		<div class="col-md-4">
-		<div style="margin-top:.3em;margin-left:.5em;margin-right:.3em;margin-bottom:.2em;height:100%">
-			<div class="caption" style="height:75%">
+		<div class="h-100 d-flex flex-column justify-content-between no-gutters rounded overflow-hidden">
+			<div class="caption" style="card-body">
 				<div class="">
 					<a href="detail?id=<?php echo $item['id']; ?>" data-toggle="tooltip1" title="<?php echo $item['title']; ?>">
-					<p style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
+					<p style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;margin-top: .5rem">
 					  <?php echo $item['title']; ?>
 					</p>
 					</a>
@@ -131,7 +131,7 @@ $item = $res[$row];
 					</p>
 				</div>
 			</div>
-			<div style="margin-bottom: 5px;height:20%">
+			<div style="card-footer">
 			<?php
 			$categoryUrl = queryString('', '', $item['subcategory'], $item['category'], 0, 0, 0, 999, $sorts, $display);
 			$categoryName = empty($item['subcategory']) ? $item['category'] : $item['subcategory'];
@@ -158,13 +158,13 @@ $item = $res[$row];
 			
 		</div>
 		</div>
-	</div>
+	
 </div>
 </div>
 <?php
 }
 ?>
-</div>
+
 <nav aria-label="..." class="bottom-page">
 <ul class="pagination justify-content-left pagination">
 	<li class="page-item <?php echo ($page==1?'disabled':'');?>">

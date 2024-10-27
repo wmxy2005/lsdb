@@ -1,4 +1,4 @@
-<?php require_once 'core/config.my.php';
+<?php require_once 'core/config.test.php';
 require_once 'core/mess.php';
 $conf = Config::$config;
 $lang = $conf['lang'];
