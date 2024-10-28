@@ -120,8 +120,10 @@ while ($row = $result2->fetch(\PDO::FETCH_ASSOC)){
 }
 
 $display_template = 'searchpage.php';
-if($display > 0){
+if($display == 1){
 	$display_template = 'searchpage_one.php';
+} else if ($display == 2){
+	$display_template = 'searchpage_list.php';
 }
 
 $template = new Template('templates/' . $display_template);
@@ -223,6 +225,14 @@ $display_item1['active'] = 1;
 $template->display_name = L('single_col');
 }
 array_push($display_list, $display_item1);
+$display_item2 = array();
+$display_item2['mess'] = L('list_col');
+$display_item2['href'] = queryString($base, $keyword, $tag, $category, $start, $page, $favi, $type, $sorts, 2);
+if($display == 2){
+$display_item2['active'] = 1;
+$template->display_name = L('list_col');
+}
+array_push($display_list, $display_item2);
 $template->display_list = $display_list;
 $template->display = $display;
 

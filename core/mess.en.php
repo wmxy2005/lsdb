@@ -36,7 +36,8 @@ function getMess() {
 	   'create_date_asc'=>'By Created Date',
 	   'modify_date'=>'Modified Date',
 	   'multi_col'=>'Multiple',
-	   'single_col'=>'Single'
+	   'single_col'=>'Single',
+	   'list_col'=>'列表'
    );
    return $mess;
 }

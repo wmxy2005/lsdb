@@ -23,7 +23,7 @@ if ($id > 0) {
 		$template->roleImges = $row['images'];
 		$template->content = $row['remark'];
 		
-		$template->base = 'etigoya955';
+		$template->base = $conf['role'];
 		$template->main_menu = $main_menu;
 		echo $template;
 	} else {

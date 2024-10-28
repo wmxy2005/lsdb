@@ -40,7 +40,7 @@ for ($i=0; $i < count($tags); $i++) {
 </div>
 </div>
 </div>
-<div class="container">
+<div class="container text-center">
 <div class="row">
 <div class="col-md-12" id="gallery-images">
 <?php

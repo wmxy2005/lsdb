@@ -36,7 +36,8 @@ function getMess() {
 	   'create_date_asc'=>'创建从早到晚',
 	   'modify_date'=>'修改时间',
 	   'multi_col'=>'多列',
-	   'single_col'=>'单列'
+	   'single_col'=>'单列',
+	   'list_col'=>'列表'
    );
    return $mess;
 }
