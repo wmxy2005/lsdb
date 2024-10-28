@@ -1,5 +1,4 @@
 <?php include 'core/init.php';
-const DIR_SEP = DIRECTORY_SEPARATOR;
 function getDir($dir) {
     $dirArray[]=NULL;
     if (false != ($handle = opendir ( $dir ))) {
@@ -56,7 +55,7 @@ if(array_key_exists('name', $queries))
 if(array_key_exists('filename', $queries))
 	$filename = $queries['filename'];
 if (!empty($name)) {
-	$filepath = $base_dir. DIR_SEP. $base . DIR_SEP . (empty($cate) ? "" : $cate . DIR_SEP) . (empty($subcate) ? "" : $subcate . DIR_SEP) . $name . DIR_SEP . $filename;
+	$filepath = getImagePath($base_dir, $base, $cate, $subcate, $name, $filename);
     if (file_exists($filepath)) {
         $filer = file_get_contents($filepath);
         header('Content-type: image/jpeg');

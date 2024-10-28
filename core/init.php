@@ -1,5 +1,6 @@
 <?php require_once 'core/config.test.php';
 require_once 'core/mess.php';
+const DIR_SEP = DIRECTORY_SEPARATOR;
 $conf = Config::$config;
 $lang = $conf['lang'];
 $GLOBALS['lang'] = new Mess($lang);
@@ -96,6 +97,10 @@ function queryString($base, $keyword, $tag, $category, $start, $page, $favi, $ty
 		return $qString . '?' . http_build_query($data);
 	else
 		return $qString;
+}
+function getImagePath($base_dir, $base, $cate, $subcate, $name, $filename) {
+	$filepath = $base_dir. DIR_SEP. $base . DIR_SEP . (empty($cate) ? "" : $cate . DIR_SEP) . (empty($subcate) ? "" : $subcate . DIR_SEP) . $name . DIR_SEP . $filename;
+	return $filepath;
 }
 function get_server_ip() {
 	return gethostbyname(gethostname());

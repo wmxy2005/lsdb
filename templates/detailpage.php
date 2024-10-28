@@ -42,11 +42,18 @@ for ($i=0; $i < count($tags); $i++) {
 </div>
 <div class="container">
 <div class="row">
-<div class="col-md-12">
+<div class="col-md-12" id="gallery-images">
 <?php
 $all_images = explode(";", $images);
-for ($i=0; $i < count($all_images); $i++) { 
-	echo ($i == 0 ? '<br>':'') . '<div class="text-center"><img class="img-fluid" src="resource?base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $all_images[$i] .'"/></div>';
+for ($i=0; $i < count($all_images); $i++) {
+	$imageUrl = 'resource?base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $all_images[$i];
+	$conf = Config::$config;
+	$base_dir = $conf['folder'];
+	$filepath = getImagePath($base_dir, $base, $category, $subcategory, $name, $all_images[$i]);
+	if (file_exists($filepath)) {
+		list($width, $height) = getimagesize($filepath);
+		echo ($i == 0 ? '<br>':'') . '<a data-pswp-src="'. $imageUrl .'" data-pswp-width="' . $width .'" data-pswp-height="' . $height .'"><img class="img-fluid" src="'. $imageUrl .'"/></a>';
+	}
 }
 ?>
 </div>
@@ -89,7 +96,6 @@ $('#open-floder').on('click', function() {
 		data : {
 			"id": <?php echo $id; ?>,
 			"cmd": <?php
-			const DIR_SEP = DIRECTORY_SEPARATOR;
 			$filepath = $folder. DIR_SEP. $base . DIR_SEP . (empty($category) ? "" : $category . DIR_SEP) . (empty($subcategory) ? "" : $subcategory . DIR_SEP) . $name;
 			echo '"explorer ' . urlencode($filepath) . '"';
 			?>
@@ -106,4 +112,5 @@ $('#open-floder').on('click', function() {
 });
 </script>
 <?php require 'backtop.tpl';
+require 'photoswipe.tpl';
 require 'footer.tpl'; ?>
