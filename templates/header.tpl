@@ -18,14 +18,17 @@
     <link href="core/css/signin.css" rel="stylesheet">
 	
 	<script>window.jQuery || document.write('<script src="assets/js/vendor/jquery.min.js"><\/script>')</script>
-	<script>
+	<script language="JavaScript">
 		$(document).ready(function(){
 			$("#fixed-top").removeClass("top-loading");
 		});
+		function updateTop(progress){
+			$('#fixed-top').animate({width: progress + '%' });
+		};
 	</script>
   </head>
 <body>
-<div id="fixed-top" class="site-wrapper-border fixed-top top-loading"></div>
+<div id="fixed-top" class="site-wrapper-border fixed-top <?php if(isset($useLoading) && $useLoading){ echo 'top-loading-none'; } else { echo 'top-loading'; } ?>"></div>
 
 <nav class="navbar navbar-expand-md bg-body-tertiary fixed-top header" role="navigation">
   <div class="container">

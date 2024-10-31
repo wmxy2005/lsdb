@@ -1,4 +1,5 @@
 <?php require_once 'core/init.php';
+$useLoading = true;
 $start = 1;
 $page = 1;
 $keyword = '';
@@ -85,7 +86,42 @@ require 'templates/header.tpl'; ?>
     $("#mask").show();
     
     var url="query.php";
-    $.get(url, {"base" : base, "keyword" : keyword, "category" : category, "tag" : tag, "start" : start, "page" : page, "favi" : favi, "type" : type, "sorts" : sorts, "display" : display}, callback);
+	var reqdata = {"base" : base, "keyword" : keyword, "category" : category, "tag" : tag, "start" : start, "page" : page, "favi" : favi, "type" : type, "sorts" : sorts, "display" : display}
+    <?php // $.get(url, reqdata, callback); ?>
+	$.ajax({
+		type: "GET",
+		url: "query.php",
+		data : reqdata,
+		xhrFields: {
+			onprogress: function (e) {
+			  var str = e.currentTarget.responseText;
+			  handleMessage(str);
+			}
+		},
+		success: function (response) {
+		  callback(response);
+		  updateTop(100);
+		},
+		error: function (response) {
+		  
+		}
+	  });
+  }
+  function handleMessage(str){
+	if(str.lastIndexOf("\n") < 0){
+		return;
+	}
+	var message = str.substring(str.lastIndexOf("\n")+1);
+	if(message && message.startsWith("<!--MSG")) {
+	  var reg = new RegExp("<!--MSG:[\\s\\S]*?--\\>");
+	  var r = message.match(reg);
+	  if (r != null) {
+		var msg = r[0].substring(8, r[0].length-3);
+		console.log(msg);
+		var status = $.parseJSON(msg);
+		updateTop(status.progress);
+	  }
+	}
   }
   function callback(data) {
 	$("#mask").hide();
@@ -115,4 +151,6 @@ require 'templates/header.tpl'; ?>
     }
   });
 </script>
-<?php require 'templates/footer.tpl'; ?>
+<?php require 'templates/footer.tpl';
+require_once 'core/initd.php';
+?>

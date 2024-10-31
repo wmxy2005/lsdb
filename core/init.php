@@ -1,4 +1,14 @@
-<?php require_once 'core/config.test.php';
+<?php
+class TimeInit
+{
+   public $logs = array();
+   public $init;
+   public function __construct(){
+	   $this->init = microtime(true);
+   }
+}
+$time_init = new TimeInit();
+require_once 'core/config.test.php';
 require_once 'core/mess.php';
 const DIR_SEP = DIRECTORY_SEPARATOR;
 $conf = Config::$config;

@@ -25,12 +25,12 @@ for ($i=0; $i < count($tags); $i++) {
 ?>
 <a id="add-plus" class="badge text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-pill" href="javascript:void(0);">
 <div id="add-loading" style="display: none">
-<span class="spinner-border spinner-border-sm" role="status">
+<span class="spinner-border spinner-border-sm" role="status" style="max-width: 1em;max-height: 1em;">
 </span>
 <?php echo L('updating'); ?>
 </div>
 <div id="add-icon">
-<span class="glyphicon glyphicon-cloud-upload" aria-hidden="true">
+<span class="glyphicon glyphicon-cloud-upload" aria-hidden="true" style="font-size: .8rem;">
 </span>
 <?php echo L('update'); ?>
 </div>
@@ -44,6 +44,9 @@ for ($i=0; $i < count($tags); $i++) {
 <div class="row">
 <div class="col-md-12" id="gallery-images">
 <?php
+echo "\n<!--COST:" . round(microtime(true) - $time_init->init, 6) . "-->";
+?>
+<?php
 $all_images = explode(";", $images);
 for ($i=0; $i < count($all_images); $i++) {
 	$imageUrl = 'resource?base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $all_images[$i];
@@ -53,8 +56,13 @@ for ($i=0; $i < count($all_images); $i++) {
 	if (file_exists($filepath)) {
 		list($width, $height) = getimagesize($filepath);
 		echo ($i == 0 ? '<br>':'') . '<a data-pswp-src="'. $imageUrl .'" data-pswp-width="' . $width .'" data-pswp-height="' . $height .'"><img class="img-fluid" src="'. $imageUrl .'"/></a>';
+	} else {
+		echo ($i == 0 ? '<br>':'') . '<img class="img-fluid" src="'. $imageUrl .'"/>';
 	}
 }
+?>
+<?php
+echo "\n<!--COST:" . round(microtime(true) - $time_init->init, 6) . "-->";
 ?>
 </div>
 </div>

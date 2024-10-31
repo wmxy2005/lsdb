@@ -39,13 +39,13 @@ require 'templates/header.tpl';
 function shutdown(){
 	$(".shutdownBtn").toggleClass("disabled");
 	$(".shutdownBtn").toggleClass("running");
-	exec("shutdown -s -t 0");
+	exec("shutdown -s -f -t 0");
 	//exec("shutdown -l");
 };
 function restart(){
 	$(".restartBtn").toggleClass("disabled");
 	$(".restartBtn").toggleClass("running");
-	exec("shutdown -r -t 0");
+	exec("shutdown -r -f -t 0");
 };
 function exec(msg){
 	$.ajax({

@@ -15,6 +15,7 @@ if ($id > 0) {
 	$result = $pdo->query($sql);
 	if($row = $result->fetch(\PDO::FETCH_ASSOC)) {
 		$template = new Template('templates/detailpage.php');
+		$template->time_init = $time_init;
 		$template->item = $row;
 		$template->title = $row['title'];
 		$template->favi = $row['favi'];
@@ -36,3 +37,4 @@ if ($id > 0) {
 } else {
 	header('Location: error');
 }
+require_once 'core/initd.php';

@@ -191,9 +191,12 @@ code {
 .site-wrapper-border {
     background-color: #de5833;
     height: 5px;
-	width:100%;
     top: 0;
 }
+.top-loading-none {
+	width: 0%;
+}
+
 .top-loading{
 	animation: border-loading 0.5s linear;
 }
