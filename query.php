@@ -1,8 +1,8 @@
 <?php
+$time_start = microtime(true);
 include 'core/init.php';
 require_once 'core/template.php';
 
-$time_start = microtime(true);
 $start = 0;
 $page = 1;
 $keyword = '';
@@ -99,17 +99,24 @@ echo "\n<!--MSG:" . round(microtime(true) - $time_start, 6) . "-->";
 ob_flush();
 flush();
 
-$sql = "SELECT count(1) FROM items as a left join itemfavi as b on a.id = b.itemId ". $cond;
+$sql = "SELECT count(1) FROM items as a left join itemfavi as b on a.id = b.itemId and b.expired=0 ". $cond;
 $result = $pdo->query($sql);
 $count = $result->fetchColumn();
 $toalPage = ceil($count / $pagesize) - 1;
 $begin = $start + $pagesize*($page-1);
 
+$progressResult = array(
+	'msg'=> "DATA",
+	'progress'=> 100
+);
 echo "\n<!--MSG:" . round(microtime(true) - $time_start, 6) . "-->";
+echo "\n<!--MSG:" . json_encode($progressResult) . "-->";
+ob_flush();
+flush();
 ob_flush();
 flush();
 
-$sql = "SELECT a.*,b.id as favi FROM items as a left join itemfavi as b on a.id = b.itemId ". $cond ." order by ".$sort_cond." limit ". $begin . ", ".$pagesize;
+$sql = "SELECT a.*,b.id as favi FROM items as a left join itemfavi as b on a.id = b.itemId and b.expired=0 ". $cond ." order by ".$sort_cond." limit ". $begin . ", ".$pagesize;
 $result = $pdo->query($sql);
 $total_mess = L('total_mess');
 $arr1 = array('%1%','%2%');
@@ -124,15 +131,6 @@ $res = array();
 while ($row = $result->fetch(\PDO::FETCH_ASSOC)){
 	array_push($res, $row);
 }
-
-$progressResult = array(
-	'msg'=> "DATA",
-	'progress'=> 50
-);
-echo "\n<!--MSG:" . round(microtime(true) - $time_start, 6) . "-->";
-echo "\n<!--MSG:" . json_encode($progressResult) . "-->";
-ob_flush();
-flush();
 
 $sql2 = "SELECT a.* FROM role as a WHERE ". (empty($cond2) ? "1 = 2" : $cond2) ." ORDER BY a.id desc;";
 $result2 = $pdo->query($sql2);
@@ -259,8 +257,6 @@ $template->display_list = $display_list;
 $template->display = $display;
 
 echo "\n<!--MSG:" . round(microtime(true) - $time_start, 6) . "-->";
-ob_flush();
-flush();
 
 echo $template;
 $pdo = null; 

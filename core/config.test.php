@@ -10,7 +10,8 @@ class Config
    'name'=>'test',
    'dbname'=>'core/test.db',
    'appendfilename'=>'',
-   'pyfolder'=>''
+   'pyfolder'=>'',
+   'queryLog'=>false
    );
    public static $typeList = array();
    public static $baseList = array([

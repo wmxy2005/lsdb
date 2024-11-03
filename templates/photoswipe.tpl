@@ -6,7 +6,10 @@ import PhotoSwipe from './assets/photoswipe/photoswipe.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery-images',
   children: 'a',
-  pswpModule: PhotoSwipe
+  pswpModule: PhotoSwipe,
+  secondaryZoomLevel: 1,
+  maxZoomLevel: 2,
+  bgOpacity: 1
 });
 
 lightbox.init();

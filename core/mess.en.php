@@ -22,6 +22,7 @@ function getMess() {
 	   'tools'=>'Tools',
 	   'shutdown'=>'Shutdown',
 	   'restart'=>'Restart',
+	   'history'=>'History',
 	   'search' =>'Search',
 	   'searching' =>'Search...',
 	   'total_mess'=>'Total %1% record(s), %2% page(s)',
@@ -33,11 +34,11 @@ function getMess() {
 	   'all'=>'All',
 	   'default'=>'Default',
 	   'date'=>'Date',
-	   'create_date_asc'=>'By Created Date',
+	   'create_date_asc'=>'Created Date',
 	   'modify_date'=>'Modified Date',
 	   'multi_col'=>'Multiple',
 	   'single_col'=>'Single',
-	   'list_col'=>'列表'
+	   'list_col'=>'List'
    );
    return $mess;
 }

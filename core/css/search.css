@@ -158,7 +158,12 @@ img.cover {
   max-height: 12em
 }
 }
-@media all and (max-width:576px){
+@media all and (max-width:576.02px){
+#navbarNavDropdownBase > .navbar-nav {
+	display: none;
+}
+}
+@media all and (max-width:768.02px){
 img.cover {
   position: relative;
   max-height: 20em
