@@ -10,7 +10,7 @@
  Target Server Version : 3035005 (3.35.5)
  File Encoding         : 65001
 
- Date: 02/11/2024 17:59:20
+ Date: 09/01/2025 21:18:44
 */
 
 PRAGMA foreign_keys = false;
@@ -28,7 +28,12 @@ CREATE TABLE "items" (
   "title" TEXT,
   "date" TEXT,
   "thumbnail" TEXT,
+  "roll" TEXT,
+  "trailer" TEXT,
   "tag" TEXT,
+  "tag2" TEXT,
+  "tag3" TEXT,
+  "extra" TEXT,
   "content" TEXT,
   "images" TEXT,
   "type" integer,
