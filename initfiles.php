@@ -8,7 +8,6 @@ ini_set('max_execution_time','36000');
 $time_start = microtime(true);
 $time_current = $time_start;
 ob_start();
-const DIR_SEP = DIRECTORY_SEPARATOR;
 
 $appendMode = ("true" == $_POST['appendmode'] ? true : false);
 
@@ -256,7 +255,9 @@ if(array_key_exists("id",$_POST)) {
 				}
 			}
 			$cmd_str = 'python ' . $conf['pyfolder'] . ' ' . $category . ' ' . $subCategory . ' ' . trim($name);
-			echo $cmd_str;
+			echo "\n" . $cmd_str;
+			ob_flush();
+			flush();
 			exec($cmd_str);
 			processDetail($pdo, $base, $dir, $category, $subCategory, trim($name), true, 0);
 		}

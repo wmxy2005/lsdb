@@ -4,6 +4,8 @@ $start = 1;
 $page = 1;
 $keyword = '';
 $tag = '';
+$tag2 = '';
+$tag3 = '';
 $category = '';
 $favi = 0;
 $type = 999;
@@ -24,6 +26,12 @@ if(array_key_exists('q', $queries)) {
 }
 if(array_key_exists('tag', $queries)) {
 	$tag = trim(rawurldecode($queries['tag']));
+}
+if(array_key_exists('tag2', $queries)) {
+	$tag2 = trim(rawurldecode($queries['tag2']));
+}
+if(array_key_exists('tag3', $queries)) {
+	$tag3 = trim(rawurldecode($queries['tag3']));
 }
 if(array_key_exists('category', $queries)) {
 	$category = trim(rawurldecode($queries['category']));
@@ -82,11 +90,11 @@ require 'templates/header.tpl'; ?>
 </div>
 <link href="core/css/search.css" rel="stylesheet">
 <script>
-  function searchAll(base, keyword, category, tag, start, page, favi, type, sorts, display) {
+  function searchAll(base, keyword, category, tag, tag2, tag3, start, page, favi, type, sorts, display) {
     $("#mask").show();
     
     var url="query.php";
-	var reqdata = {"base" : base, "keyword" : keyword, "category" : category, "tag" : tag, "start" : start, "page" : page, "favi" : favi, "type" : type, "sorts" : sorts, "display" : display}
+	var reqdata = {"base" : base, "keyword" : keyword, "category" : category, "tag" : tag, "tag2" : tag2, "tag3" : tag3, "start" : start, "page" : page, "favi" : favi, "type" : type, "sorts" : sorts, "display" : display}
     <?php // $.get(url, reqdata, callback); ?>
 	$.ajax({
 		type: "GET",
@@ -126,6 +134,14 @@ require 'templates/header.tpl'; ?>
   function callback(data) {
 	$("#mask").hide();
     $('#content').html(data);
+	$('.thumbnail__video').on({
+	  mouseenter: function () {
+		  $(this).toggleClass("thumbnail__video-hovered", true);
+	  },
+	  mouseleave: function () {
+		  $(this).toggleClass("thumbnail__video-hovered", false);
+	  }
+	});
     $(document).scrollTop(0);
     $('[data-toggle="tooltip"]').tooltip();
   }
@@ -147,7 +163,7 @@ require 'templates/header.tpl'; ?>
 	    var myfavi = getQueryString("myfavi");
       if(page == '')
         page = 1;*/
-      <?php echo '$(\'#search-input\').val(\''.$keyword.'\');'; echo "searchAll('".$base."','".$keyword."','".$category."','".$tag."',0,".$page.",".$favi.",".$type.",".$sorts.",".$display.");";?>
+      <?php echo '$(\'#search-input\').val(\''.$keyword.'\');'; echo "searchAll('".$base."','".$keyword."','".$category."','".$tag."','".$tag2."','".$tag3."',0,".$page.",".$favi.",".$type.",".$sorts.",".$display.");";?>
     }
   });
 </script>

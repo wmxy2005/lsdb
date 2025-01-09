@@ -24,7 +24,13 @@ if ($id > 0) {
 		$template->favi = $row['favi'];
 		$template->id = $row['id'];
 		$template->content = $row['content'];
+		$template->roll = $row['roll'];
+		$template->thumbnail = $row['thumbnail'];
+		$template->trailer = $row['trailer'];
 		$template->tag = $row['tag'];
+		$template->tag2 = $row['tag2'];
+		$template->tag3 = $row['tag3'];
+		$template->extra = $row['extra'];
 		$template->base = $row['base'];
 		$template->category = $row['category'];
 		$template->subcategory = $row['subcategory'];

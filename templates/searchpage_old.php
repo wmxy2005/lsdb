@@ -201,74 +201,10 @@ $item = $res[$row];
 			}
 			?>
 		</a>
-		<div class="card-body" style="padding: 0.2em 0.2em;display: flex; flex-direction: column; justify-content: flex-end;">
-			
-			<div class="caption" style="display: flex;">
-				
-				<div class="" style="padding: 5px;align-content: center;justify-content: center;">
-				<a href="<?php echo 'search?base='.$item['base']; ?>" class="" style="text-decoration: none;">
-					<?php
-					$conf = Config::$config;
-					$base_dir = $conf['folder'];					
-					$icon_category = '';
-					$icon_name = '';
-					if (file_exists(getImagePath($base_dir, $item['base'], $item['category'], '', '', 'logo.png'))) {
-						$icon_name = 'logo.png';
-						$icon_category = $item['category'];
-					} else if (file_exists(getImagePath($base_dir, $item['base'], $item['category'], '', '', 'logo.jpg'))) {
-						$icon_name = 'logo.png';
-						$icon_category = $item['category'];
-					} else if (file_exists(getImagePath($base_dir, $item['base'], $item['category'], '', '', 'logo.svg'))) {
-						$icon_name = 'logo.svg';
-						$icon_category = $item['category'];
-					} else if (file_exists(getImagePath($base_dir, $item['base'], '', '', '', 'logo.png'))) {
-						$icon_name = 'logo.png';
-					} else if (file_exists(getImagePath($base_dir, $item['base'], '', '', '', 'logo.jpg'))) {
-						$icon_name = 'logo.jpg';
-					} else if (file_exists(getImagePath($base_dir, $item['base'], '', '', '', 'logo.svg'))) {
-						$icon_name = 'logo.svg';
-					}
-					
-					if (!empty($icon_name)) {
-						$icon_url = getImageUrl($item['base'], $icon_category, '', '', $icon_name);
-					?>
-					<div style="
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						width: 35px;
-						height: 35px;
-						border-radius: 50%;
-						font-size: 12px;
-						color: white;
-						background-color: #212529;
-						font-weight: bold;
-					">
-					<img class="" src="<?php echo $icon_url; ?>" style="width: 35px;height: 35px;border-radius: 50%;">
-					</div>
-					<?php
-					} else {
-					?>
-					<div style="
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						width: 35px;
-						height: 35px;
-						border-radius: 50%;
-						font-size: 12px;
-						color: white;
-						background-color: #007bff;
-						font-weight: bold;
-					"><?php echo strtoupper(substr($item['base'], 0, 3)); ?></div>
-					<?php
-					}
-					?>
-				</a>
-				</div>
-				
-				<div class="mytitle" style="padding-left: 0.2rem;">
-					<a href="detail?id=<?php echo $item['id']; ?>" data-toggle="tooltip1" title="<?php echo $item['title']; ?>" style="color: black;">
+		<div class="card-body" style="padding: 0.2em 0.2em">
+			<div class="caption">
+				<div class="mytitle">
+					<a href="detail?id=<?php echo $item['id']; ?>" data-toggle="tooltip1" title="<?php echo $item['title']; ?>">
 					<p style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
 					  <?php echo $item['title']; ?>
 					</p></a>
@@ -279,7 +215,7 @@ $item = $res[$row];
 			<?php
 			$categoryUrl = queryString('', '', $item['subcategory'], '', '', $item['category'], 0, 0, 0, 999, $sorts, $display);
 			$categoryName = empty($item['subcategory']) ? $item['category'] : $item['subcategory'];
-			if(empty($base) && 1 == 2){
+			if(empty($base)){
 				if(strlen($item['base']) > 5)
 					echo '<a href="search?base='.$item['base'].'" target="_blank"><span class="badge text-danger-emphasis bg-danger-subtle border border-danger-subtle rounded-pill">'. $item['base'] .'</span></a> ';
 				else
@@ -300,7 +236,6 @@ $item = $res[$row];
 			</div>
 		</div>
 		<div class="card-footer">
-			
 			<div class="d-flex justify-content-between align-items-center">
 				<span class="glyphicon glyphicon-heart item-favi <?php echo (empty($item['favi'])? '':' item-like'); ?>" item-id="<?php echo $item['id']; ?>" aria-hidden="true" onclick="itemLike(this);"></span>
 				

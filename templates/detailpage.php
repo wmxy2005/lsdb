@@ -1,18 +1,24 @@
 <?php require 'header.tpl'; ?>
 <div class="pageinfo bg-body-secondary">
 <div class="container">
-<p class="fs-2 fw-semibold"><?php echo $title; ?></p>
-<span class="glyphicon glyphicon-heart item-favi <?php echo (empty($favi)? '':' item-like'); ?>" item-id="<?php echo $id; ?>" aria-hidden="true" style="font-size:2em;" onclick="itemLike(this);">
+<div style="display: flex;">
+<span class="glyphicon glyphicon-heart item-favi <?php echo (empty($favi)? '':' item-like'); ?>" item-id="<?php echo $id; ?>" aria-hidden="true" style="font-size:3em;padding: 0 10px 0 0px" onclick="itemLike(this);">
 </span>
+<p class="fs-2 fw-semibold"><?php echo $title; ?></p>
+</div>
 <p class="fs-6">
 <?php
 echo str_replace(PHP_EOL, "<br/>", $content);
-echo '<br/>' . $base.' · '. $category . (empty($subcategory)?'':' · ' . $subcategory . '')  . ' · '. $name . '';
+echo '<br/>' . $base . (empty($category)?'':' · ' . $category . '') . (empty($subcategory)?'':' · ' . $subcategory . '')  . ' · '. $name . '';
 ?>
 </p>
+<?php
+if(!empty($extra))
+	echo '<span>' . $extra . '</span>';
+?>
 <div class="fs-5">
 <?php
-$categoryUrl = queryString('', '', $subcategory, $category, 0, 0, 0, 999, 0, 0);
+$categoryUrl = queryString('', '', $subcategory, '', '', $category, 0, 0, 0, 999, 0, 0);
 $categoryName = empty($subcategory) ? $category : $subcategory;
 echo (empty($subcategory) ? '<a class="badge text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill" href="'.$categoryUrl.'">'. $category .'</a> '
 			: '<a class="badge text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-pill" href="'. $categoryUrl.'">'. $subcategory .'</a> ');
@@ -22,6 +28,9 @@ for ($i=0; $i < count($tags); $i++) {
 	if($tagValue != '')
 		echo '<a class="badge text-info-emphasis bg-info-subtle border border-info-subtle rounded-pill" href="search?tag='.$tagValue.'">'. $tagValue .'</span></a> ';
 }
+?>
+<?php
+if ($base == 'javfree') {
 ?>
 <a id="add-plus" class="badge text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-pill" href="javascript:void(0);">
 <div id="add-loading" style="display: none">
@@ -35,16 +44,53 @@ for ($i=0; $i < count($tags); $i++) {
 <?php echo L('update'); ?>
 </div>
 </a>
+<?php
+}
+?>
 <a id="open-floder" class="badge text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-pill" href="javascript:void(0);"><?php echo L('open'); ?></a>
 <br/>
+<?php
+$tags2 = explode(";", $tag2);
+for ($i=0; $i < count($tags2); $i++) {
+	$tagValue = trim($tags2[$i]);
+	if($tagValue != '')
+		echo '<a class="badge text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill" href="search?tag2='.$tagValue.'">'. $tagValue .'</span></a> ';
+}
+$tags3 = explode(";", $tag3);
+for ($i=0; $i < count($tags3); $i++) {
+	$tagValue = trim($tags3[$i]);
+	if($tagValue != '')
+		echo '<a class="badge text-dark-emphasis bg-dark-subtle border border-dark-subtle rounded-pill" href="search?tag3='.$tagValue.'">'. $tagValue .'</span></a> ';
+}
+?>
 </div>
 </div>
 </div>
 <div class="container text-center">
+<div class="row" style="justify-content: center;padding: 12px;">
+<?php
+if (!empty($trailer)) {
+?>
+<source id="video_url" style="display: none;" src="<?php echo 'resource?base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $trailer; ?>"></source>
+<source id="poster_url" style="display: none;" src="<?php echo 'resource?base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $thumbnail; ?>"></source>
+<div id="xplayer"></div>
+<?php
+}
+?>
+</div>
 <div class="row">
 <div class="col-md-12" id="gallery-images">
 <?php
 echo "\n<!--COST:" . round(microtime(true) - $time_init->init, 6) . "-->";
+?>
+<?php
+if (!empty($trailer) && 1 == 2) {
+?>
+<video class="embed-responsive" width="100%" controls >
+<source src="<?php echo 'resource?base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $trailer; ?>" type="video/mp4"></source>
+</video>
+<?php
+}
 ?>
 <?php
 $all_images = explode(";", $images);
@@ -55,9 +101,9 @@ for ($i=0; $i < count($all_images); $i++) {
 	$filepath = getImagePath($base_dir, $base, $category, $subcategory, $name, $all_images[$i]);
 	if (file_exists($filepath)) {
 		list($width, $height) = getimagesize($filepath);
-		echo ($i == 0 ? '<br>':'') . '<a data-pswp-src="'. $imageUrl .'" data-pswp-width="' . $width .'" data-pswp-height="' . $height .'"><img class="img-fluid" src="'. $imageUrl .'"/></a>';
+		echo ($i == 0 ? '':'') . '<a data-pswp-src="'. $imageUrl .'" data-pswp-width="' . $width .'" data-pswp-height="' . $height .'"><img class="img-fluid" src="'. $imageUrl .'"/></a>';
 	} else {
-		echo ($i == 0 ? '<br>':'') . '<img class="img-fluid" src="'. $imageUrl .'"/>';
+		echo ($i == 0 ? '':'') . '<img class="img-fluid" src="'. $imageUrl .'"/>';
 	}
 }
 ?>
@@ -78,6 +124,12 @@ $('#add-plus').on('click', function() {
 		data : {
 			"appendmode":true,
 			"id": <?php echo $id; ?>
+		},
+		xhrFields: {
+			onprogress: function (e) {
+				var msg = e.currentTarget.responseText;
+				console.log(msg);
+			}
 		},
 		success: function (response) {
 			$('#add-plus').removeClass("disabled");
@@ -119,6 +171,8 @@ $('#open-floder').on('click', function() {
 	});
 });
 </script>
-<?php require 'backtop.tpl';
+<?php require 'vpalyer.tpl';
+require 'backtop.tpl';
+require 'backtop.tpl';
 require 'photoswipe.tpl';
 require 'footer.tpl'; ?>

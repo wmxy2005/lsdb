@@ -133,7 +133,7 @@ $item = $res[$row];
 			</div>
 			<div style="card-footer">
 			<?php
-			$categoryUrl = queryString('', '', $item['subcategory'], $item['category'], 0, 0, 0, 999, $sorts, $display);
+			$categoryUrl = queryString('', '', $item['subcategory'], '', '', $item['category'], 0, 0, 0, 999, $sorts, $display);
 			$categoryName = empty($item['subcategory']) ? $item['category'] : $item['subcategory'];
 			echo (empty($item['subcategory']) ? '<a class="badge text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill" href="'.$categoryUrl.'" target="_blank">'. $item['category'] .'</a>'
 						: '<a class="badge text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-pill" href="'. $categoryUrl.'" target="_blank">'. $item['subcategory'] .'</a>');
@@ -142,7 +142,7 @@ $item = $res[$row];
 			for ($i=0,$count=0; $i < count($tags) && $count<10; $i++) {
 				$tagValue = trim($tags[$i]);
 				if($tagValue != '' && strpos($categoryName,trim($tagValue)) === false) {
-					echo ' <a class="badge text-info-emphasis bg-info-subtle border border-info-subtle rounded-pill" href="'.queryString('', '', $tagValue, '', 0, 1, 0, 999, $sorts, $display).'" target="_blank">'. $tagValue .'</a>';
+					echo ' <a class="badge text-info-emphasis bg-info-subtle border border-info-subtle rounded-pill" href="'.queryString('', '', $tagValue, '', '', '', 0, 1, 0, 999, $sorts, $display).'" target="_blank">'. $tagValue .'</a>';
 					$count++;
 				}
 			}
@@ -168,12 +168,12 @@ $item = $res[$row];
 <nav aria-label="..." class="bottom-page">
 <ul class="pagination justify-content-left pagination">
 	<li class="page-item <?php echo ($page==1?'disabled':'');?>">
-		<a class="page-link" href="<?php $q = queryString($base, $keyword, $tag, $category, $start, 1, $favi, $type, $sorts, $display); echo $q; ?>">
+		<a class="page-link" href="<?php $q = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, 1, $favi, $type, $sorts, $display); echo $q; ?>">
 			<span aria-hidden="true">&laquo;</span>
 		</a>
 	</li>
 	<?php if($page > 1) {
-		$q = queryString($base, $keyword, $tag, $category, $start, $page-1, $favi, $type, $sorts, $display);
+		$q = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, $page-1, $favi, $type, $sorts, $display);
 		echo '<li class="page-item"><a class="page-link" href="'.$q.'" aria-label=""><span aria-hidden="true" style="white-space: nowrap;">'.L('prev').'</span></a></li>';
 	} else {
 		echo '<li class="page-item disabled"><a class="page-link" aria-label=""><span aria-hidden="true">'.L('prev').'</span></a></li>';
@@ -183,18 +183,18 @@ $item = $res[$row];
 			if($i == $page)
 				echo '<li class="page-item active"><span class="page-link">' . ($i) .'</span></li>';
 			else {
-				$q = queryString($base, $keyword, $tag, $category, $start, $i, $favi, $type, $sorts, $display);
+				$q = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, $i, $favi, $type, $sorts, $display);
 				echo '<li class="page-item"><a class="page-link" href="'.$q.'">'. ($i) .'</a></li>';
 			}
 		}
 	}
 	if($page <= $toalPage) {
-		$q = queryString($base, $keyword, $tag, $category, $start, $page+1, $favi, $type, $sorts, $display);
+		$q = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, $page+1, $favi, $type, $sorts, $display);
 		echo '<li class="page-item"><a class="page-link" href="'. $q .'" aria-label=""><span aria-hidden="true" style="white-space: nowrap;">'.L('next').'</span></a></li>';
 	} else {
 		echo '<li class="page-item disabled"><a class="page-link" aria-label=""><span aria-hidden="true">'.L('next').'</span></a></li>';
 	}
-	$q = queryString($base, $keyword, $tag, $category, $start, $toalPage+1, $favi, $type, $sorts, $display);
+	$q = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, $toalPage+1, $favi, $type, $sorts, $display);
 	?>
 	<li class="page-item <?php echo ($page==$toalPage+1?'disabled':''); ?>">
 		<a class="page-link" href="<?php echo $q; ?>" aria-label="">

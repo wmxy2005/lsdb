@@ -8,7 +8,7 @@ class TimeInit
    }
 }
 $time_init = new TimeInit();
-require_once 'core/config.test.php';
+require_once 'core/config.my.php';
 require_once 'core/mess.php';
 const DIR_SEP = DIRECTORY_SEPARATOR;
 $conf = Config::$config;
@@ -76,8 +76,12 @@ $menu3 = array();
 $menu3['mess'] = L('tools');
 $menu3['href'] = 'tools';
 array_push($main_menu, $menu3);
+$menu4 = array();
+$menu4['mess'] = L('history');
+$menu4['href'] = 'history';
+// array_push($main_menu, $menu4);
 
-function queryString($base, $keyword, $tag, $category, $start, $page, $favi, $type, $sorts, $display) {
+function queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, $page, $favi, $type, $sorts, $display) {
 	$qString = 'search';
 	$data = array();
 	if(!is_null($type)){
@@ -97,6 +101,10 @@ function queryString($base, $keyword, $tag, $category, $start, $page, $favi, $ty
 		$data["q"] = $keyword;
 	if(!empty($tag))
 		$data["tag"] = $tag;
+	if(!empty($tag2))
+		$data["tag2"] = $tag2;
+	if(!empty($tag3))
+		$data["tag3"] = $tag3;
 	if(!empty($category))
 		$data["category"] = $category;
 	if(!empty($start))
@@ -109,11 +117,25 @@ function queryString($base, $keyword, $tag, $category, $start, $page, $favi, $ty
 		return $qString;
 }
 function getImagePath($base_dir, $base, $cate, $subcate, $name, $filename) {
-	$filepath = $base_dir. DIR_SEP. $base . DIR_SEP . (empty($cate) ? "" : $cate . DIR_SEP) . (empty($subcate) ? "" : $subcate . DIR_SEP) . $name . DIR_SEP . $filename;
+	$filepath = $base_dir. DIR_SEP. $base . DIR_SEP . (empty($cate) ? "" : $cate . DIR_SEP) . (empty($subcate) ? "" : $subcate . DIR_SEP) . (empty($name) ? "" : $name . DIR_SEP) . $filename;
 	return $filepath;
 }
-function get_server_ip() {
-	return gethostbyname(gethostname());
+function getImageUrl($base, $cate, $subcate, $name, $filename) {
+	$image_url = 'resource?' . 'base=' . $base . (empty($cate) ? "" : '&cata=' . $cate) . (empty($subcate) ? "" : '&subcata=' . $subcate) . (empty($name) ? "" : '&name=' . $name) . '&filename=' . $filename;
+	return $image_url;
+}
+function str_starts_with($haystack, $needle) {
+	if ( '' === $needle ) {
+		return true;
+	}
+	return 0 === strpos($haystack, $needle);
+}
+function str_ends_with($haystack, $needle) {
+	if ( '' === $haystack && '' !== $needle ) {
+		return false;
+	}
+	$len = strlen($needle);
+	return 0 === substr_compare($haystack, $needle, -$len, $len);
 }
 $GLOBALS['styleTypes'] = array("primary", "secondary", "success", "danger", "warning", "info", "light", "dark");
 function get_style_type($index) {

@@ -7,6 +7,8 @@ $start = 0;
 $page = 1;
 $keyword = '';
 $tag = '';
+$tag2 = '';
+$tag3 = '';
 $category = '';
 $favi = 0;
 $type = 999;
@@ -26,6 +28,12 @@ if(array_key_exists('keyword', $queries)) {
 }
 if(array_key_exists('tag', $queries)) {
 	$tag = trim(rawurldecode($queries['tag']));
+}
+if(array_key_exists('tag2', $queries)) {
+	$tag2 = trim(rawurldecode($queries['tag2']));
+}
+if(array_key_exists('tag3', $queries)) {
+	$tag3 = trim(rawurldecode($queries['tag3']));
 }
 if(array_key_exists('category', $queries)) {
 	$category = trim(rawurldecode($queries['category']));
@@ -72,6 +80,12 @@ if(!empty($tag)) {
 	$cond = $cond . " and a.tag like '%" . $tag ."%'";
 	
 	$cond2 = $cond2 . (empty($cond2) ? "" : " or ") . "a.name like '%" . $tag . "%'";
+}
+if(!empty($tag2)) {
+	$cond = $cond . " and a.tag2 like '%" . $tag2 ."%'";
+}
+if(!empty($tag3)) {
+	$cond = $cond . " and a.tag3 like '%" . $tag3 ."%'";
 }
 if(!empty($category))
 	$cond = $cond . " and a.category like '%" . $category ."%'";
@@ -158,6 +172,8 @@ $template->type = $type;
 $template->total_mess = $total_mess;
 $template->category = $category;
 $template->tag = $tag;
+$template->tag2 = $tag2;
+$template->tag3 = $tag3;
 $template->keyword = $keyword;
 
 $time_cost = round(microtime(true) - $time_start, 3);
@@ -169,7 +185,7 @@ $typeAll['mess'] = L('all');
 if($type > 99){
 	$typeAll['active'] = 1;
 }
-$typeAll['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, 999, $sorts, $display);
+$typeAll['href'] = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, 1, $favi, 999, $sorts, $display);
 array_push($type_list, $typeAll);
 $typeList = Config::$typeList;
 for($i=0; $i < sizeof($typeList); $i=$i+1) {
@@ -179,7 +195,7 @@ for($i=0; $i < sizeof($typeList); $i=$i+1) {
 	if($type == $typeItem['type']){
 		$typeNew['active'] = 1;
 	}
-	$typeNew['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, $typeItem['type'], $sorts, $display);
+	$typeNew['href'] = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, 1, $favi, $typeItem['type'], $sorts, $display);
 	array_push($type_list, $typeNew);
 }
 $template->type_list = $type_list;
@@ -187,7 +203,7 @@ $template->type_list = $type_list;
 $base_list = array();
 $base0 = array();
 $base0['mess'] = L('all');
-$base0['href'] = queryString('', $keyword, $tag, $category, $start, 1, $favi, $type, 0, $display);
+$base0['href'] = queryString('', $keyword, $tag, $tag2, $tag3, $category, $start, 1, $favi, $type, 0, $display);
 if($base == ''){
 $base0['active'] = 1;
 $template->base_name = L('all');
@@ -198,7 +214,7 @@ for($i=0; $i < sizeof($baseList); $i=$i+1) {
 	$baseItem = $baseList[$i];
 	$base1 = array();
 	$base1['mess'] = $baseItem['mess'];
-	$base1['href'] = queryString($baseItem['name'], $keyword, $tag, $category, $start, 1, $favi, $type, 0, $display);
+	$base1['href'] = queryString($baseItem['name'], $keyword, $tag, $tag2, $tag3, $category, $start, 1, $favi, $type, 0, $display);
 	if($base == $baseItem['name']){
 		$base1['active'] = 1;
 		$template->base_name = $base1['mess'];
@@ -211,7 +227,7 @@ $template->base_list = $base_list;
 $sort_list = array();
 $sort_item0 = array();
 $sort_item0['mess'] = L('default');
-$sort_item0['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, $type, 0, $display);
+$sort_item0['href'] = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, 1, $favi, $type, 0, $display);
 if($sorts == 0){
 $sort_item0['active'] = 1;
 $template->sort_name = L('default');
@@ -219,7 +235,7 @@ $template->sort_name = L('default');
 array_push($sort_list, $sort_item0);
 $sort_item1 = array();
 $sort_item1['mess'] = L('create_date_asc');
-$sort_item1['href'] = queryString($base, $keyword, $tag, $category, $start, 1, $favi, $type, 1, $display);
+$sort_item1['href'] = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, 1, $favi, $type, 1, $display);
 if($sorts == 1){
 $sort_item1['active'] = 1;
 $template->sort_name = L('create_date_asc');
@@ -231,7 +247,7 @@ $template->sorts = $sorts;
 $display_list = array();
 $display_item0 = array();
 $display_item0['mess'] = L('multi_col');
-$display_item0['href'] = queryString($base, $keyword, $tag, $category, $start, $page, $favi, $type, $sorts, 0);
+$display_item0['href'] = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, $page, $favi, $type, $sorts, 0);
 if($display == 0){
 $display_item0['active'] = 1;
 $template->display_name = L('multi_col');
@@ -239,7 +255,7 @@ $template->display_name = L('multi_col');
 array_push($display_list, $display_item0);
 $display_item1 = array();
 $display_item1['mess'] = L('single_col');
-$display_item1['href'] = queryString($base, $keyword, $tag, $category, $start, $page, $favi, $type, $sorts, 1);
+$display_item1['href'] = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, $page, $favi, $type, $sorts, 1);
 if($display == 1){
 $display_item1['active'] = 1;
 $template->display_name = L('single_col');
@@ -247,7 +263,7 @@ $template->display_name = L('single_col');
 array_push($display_list, $display_item1);
 $display_item2 = array();
 $display_item2['mess'] = L('list_col');
-$display_item2['href'] = queryString($base, $keyword, $tag, $category, $start, $page, $favi, $type, $sorts, 2);
+$display_item2['href'] = queryString($base, $keyword, $tag, $tag2, $tag3, $category, $start, $page, $favi, $type, $sorts, 2);
 if($display == 2){
 $display_item2['active'] = 1;
 $template->display_name = L('list_col');
