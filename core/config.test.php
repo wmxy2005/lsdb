@@ -9,6 +9,7 @@ class Config
    'folder' =>'sample',
    'name'=>'test',
    'dbname'=>'core/test.db',
+   'role'=>'role',
    'appendfilename'=>'',
    'pyfolder'=>'',
    'queryLog'=>false
@@ -17,6 +18,9 @@ class Config
    public static $baseList = array([
    'name'=>'wallpaper',
    'mess'=>'Wallpaper'
+   ],[
+   'name'=>'wallpaper2',
+   'mess'=>'Wallpaper2'
    ]);
 }
 ?>

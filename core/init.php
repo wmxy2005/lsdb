@@ -8,7 +8,7 @@ class TimeInit
    }
 }
 $time_init = new TimeInit();
-require_once 'core/config.my.php';
+require_once 'core/config.test.php';
 require_once 'core/mess.php';
 const DIR_SEP = DIRECTORY_SEPARATOR;
 $conf = Config::$config;

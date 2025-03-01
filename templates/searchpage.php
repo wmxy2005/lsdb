@@ -102,6 +102,7 @@ $item = $type_list[$row];
 	</div>
 	<div class="fs-5">
 	<?php
+    $conf = Config::$config;
 	for ($row=0; $row < count($resRole); $row++) {
 	$role = $resRole[$row];
 	$roleNames= preg_split('[;]', $role['name'], 0, PREG_SPLIT_NO_EMPTY);
@@ -140,7 +141,7 @@ $item = $type_list[$row];
 				}
 			}
 		}
-		$imgUrl = 'resource?base=etigoya955&name=e'. $role['id'].'&filename='. $roleImgeSrc;
+		$imgUrl = 'resource?base=' . $conf['role'] . '&name=e'. $role['id'].'&filename='. $roleImgeSrc;
 		echo '<img class="rounded-circle me-1" src="' . $imgUrl . '" alt="" width="24" height="24">';
 	}
 	if(!empty($searchWord)) {
