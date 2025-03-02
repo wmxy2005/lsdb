@@ -290,7 +290,7 @@ $item = $res[$row];
 						: '<a class="badge text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-pill" href="'. $categoryUrl.'" target="_blank">'. $item['subcategory'] .'</a>');
 			$tags = explode(";", $item['tag']);
 
-			for ($i=0,$count=0; $i < count($tags) && $count < 1; $i++) {
+			for ($i=0,$count=0; $i < count($tags) && $count < 2; $i++) {
 				$tagValue = trim($tags[$i]);
 				if($tagValue != '' && strpos($categoryName,trim($tagValue)) === false) {
 					echo ' <a class="badge text-info-emphasis bg-info-subtle border border-info-subtle rounded-pill" href="search?tag='.$tagValue.'" target="_blank">'. $tagValue .'</a>';
@@ -317,6 +317,9 @@ $item = $res[$row];
 }
 ?>
 </div>
+<?php
+if (count($res) > 0) {
+?>
 <nav aria-label="..." class="bottom-page">
 <ul class="pagination justify-content-left pagination">
 	<li class="page-item <?php echo ($page==1?'disabled':'');?>">
@@ -355,4 +358,7 @@ $item = $res[$row];
 	</li>
 </ul>
 </nav>
+<?php
+}
+?>
 <div>

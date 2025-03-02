@@ -129,6 +129,15 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
         }
     }
     }
+	$tag = trim($tag);
+	if(!empty($tag)){
+		if(!str_starts_with($tag, ';')){
+			$tag = ';' . $tag;
+		}
+		if(!str_ends_with($tag, ';')){
+			$tag = $tag . ';';
+		}
+	}
     if($item_id > 0) {
         $pdo->exec("update items set name='".$name."',title='". $title."',date='".$date."',thumbnail='".$thumbnail."',tag='".$tag."',content='".$content."',images='".$images."' where id = ". $item_id);
     } else {

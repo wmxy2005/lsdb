@@ -77,9 +77,9 @@ if(!empty($keyword)) {
 }
 
 if(!empty($tag)) {
-	$cond = $cond . " and a.tag like '%" . $tag ."%'";
+	$cond = $cond . " and a.tag like '%;" . $tag .";%'";
 	
-	$cond2 = $cond2 . (empty($cond2) ? "" : " or ") . "a.name like '%" . $tag . "%'";
+	$cond2 = $cond2 . (empty($cond2) ? "" : " or ") . "a.name like '%;" . $tag . ";%'";
 }
 if(!empty($tag2)) {
 	$cond = $cond . " and a.tag2 like '%" . $tag2 ."%'";

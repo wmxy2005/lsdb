@@ -6,16 +6,20 @@
 </span>
 <p class="fs-2 fw-semibold"><?php echo $title; ?></p>
 </div>
+<div>
+	<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+	<span><?php echo $date; ?></span>
+<?php
+if(!empty($extra))
+	echo '<span class="badge text-dark-emphasis bg-dark-subtle border border-dark-subtle rounded-pill">' . $extra . '</span>';
+?>
+</div>
 <p class="fs-6">
 <?php
 echo str_replace(PHP_EOL, "<br/>", $content);
 echo '<br/>' . $base . (empty($category)?'':' · ' . $category . '') . (empty($subcategory)?'':' · ' . $subcategory . '')  . ' · '. $name . '';
 ?>
 </p>
-<?php
-if(!empty($extra))
-	echo '<span>' . $extra . '</span>';
-?>
 <div class="fs-5">
 <?php
 $categoryUrl = queryString('', '', $subcategory, '', '', $category, 0, 0, 0, 999, 0, 0);
@@ -54,13 +58,13 @@ $tags2 = explode(";", $tag2);
 for ($i=0; $i < count($tags2); $i++) {
 	$tagValue = trim($tags2[$i]);
 	if($tagValue != '')
-		echo '<a class="badge text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill" href="search?tag2='.$tagValue.'">'. $tagValue .'</span></a> ';
+		echo '<a class="badge text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill" href="search?tag2='.$tagValue.'">'. $tagValue .'</a> ';
 }
 $tags3 = explode(";", $tag3);
 for ($i=0; $i < count($tags3); $i++) {
 	$tagValue = trim($tags3[$i]);
 	if($tagValue != '')
-		echo '<a class="badge text-dark-emphasis bg-dark-subtle border border-dark-subtle rounded-pill" href="search?tag3='.$tagValue.'">'. $tagValue .'</span></a> ';
+		echo '<a class="badge text-dark-emphasis bg-dark-subtle border border-dark-subtle rounded-pill" href="search?tag3='.$tagValue.'">'. $tagValue .'</a> ';
 }
 ?>
 </div>

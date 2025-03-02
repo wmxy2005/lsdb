@@ -21,6 +21,7 @@ if ($id > 0) {
 		$template->time_init = $time_init;
 		$template->item = $row;
 		$template->title = $row['title'];
+		$template->date = $row['date'];
 		$template->favi = $row['favi'];
 		$template->id = $row['id'];
 		$template->content = $row['content'];
