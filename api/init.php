@@ -1,4 +1,11 @@
 <?php
+require_once 'core/config.test.php';
+require_once 'core/mess.php';
+$conf = Config::$config;
+$lang = $conf['lang'];
+$dbname = './' . $conf['dbname'];
+$GLOBALS['lang'] = new Mess($lang);
+$base_dir = $conf['folder'];
 const DIR_SEP = DIRECTORY_SEPARATOR;
 const TOKEN_EXPIRED = 3600*24*7;
 const Allow_Origin = 'http://localhost:8000';
@@ -138,6 +145,4 @@ function get_style_type($index) {
 	$i = ($index) % sizeof($GLOBALS['styleTypes']);
 	return $GLOBALS['styleTypes'][$i];
 }
-require_once '../core/config.my.php';
-require_once '../core/mess.php';
 ?>

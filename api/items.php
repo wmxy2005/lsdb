@@ -71,7 +71,9 @@ $sort = '';
 $display = 0;
 
 $queries = array();
-parse_str($_SERVER['QUERY_STRING'], $queries);
+if(array_key_exists('QUERY_STRING', $_SERVER)){
+	parse_str($_SERVER['QUERY_STRING'], $queries);
+}
 if(array_key_exists('start', $queries)) {
 	$start = $queries['start'];
 }
@@ -107,6 +109,12 @@ if(array_key_exists('tag', $queries)) {
 			array_push($tag, $splitStr[$i]);
 		}
 	}
+}
+if(array_key_exists('dateFrom', $queries)) {
+	$dateFrom = trim(rawurldecode($queries['dateFrom']));
+}
+if(array_key_exists('dateTo', $queries)) {
+	$dateTo = trim(rawurldecode($queries['dateTo']));
 }
 if(array_key_exists('matchMode', $queries)) {
 	$matchMode = $queries['matchMode'];
@@ -158,6 +166,12 @@ if(!empty($tag)) {
 	}
 	$cond = $cond . " and (" . $arrayConds .")";
 }
+if(!empty($dateFrom)) {
+	$cond = $cond . " and a.date >= '" . $dateFrom ."'";
+}
+if(!empty($dateTo)) {
+	$cond = $cond . " and a.date <= '" . $dateTo ."'";
+}
 
 if(strlen($type) > 0) {
 	$cond = $cond . " and a.type = " . $type ."";
@@ -181,7 +195,6 @@ if($favi > 0) {
 	}
 }
 
-$dbname = '../' . $conf['dbname'];
 $pdo = new \PDO('sqlite:'.$dbname);
 
 $sql = "SELECT count(1) FROM items as a left join itemfavi as b on a.id = b.itemId and b.expired=0 ". $cond;

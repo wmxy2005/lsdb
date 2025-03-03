@@ -47,11 +47,6 @@ if(!$auth){
 	return;
 }
 
-$conf = Config::$config;
-$lang = $conf['lang'];
-$GLOBALS['lang'] = new Mess($lang);
-$base_dir = $conf['folder'];
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$input = file_get_contents('php://input');
 	$decoded_input = json_decode($input, true);

@@ -34,10 +34,6 @@ function getFile($dir) {
     return $fileArray;
 }
 
-$conf = Config::$config;
-$folder = $conf['folder'];
-
-$base_dir = $folder;
 $base = '';
 $cate = '';
 $subcate = '';

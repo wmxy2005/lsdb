@@ -47,20 +47,16 @@ if(!$auth){
 	return;
 }
 
-$conf = Config::$config;
-$lang = $conf['lang'];
-$GLOBALS['lang'] = new Mess($lang);
-$base_dir = $conf['folder'];
-
 $id = 0;
 $queries = array();
-parse_str($_SERVER['QUERY_STRING'], $queries);
+if(array_key_exists('QUERY_STRING', $_SERVER)){
+	parse_str($_SERVER['QUERY_STRING'], $queries);
+}
 if(array_key_exists('id', $queries)) {
 	$id = $queries['id'];
 }
 
 if ($id > 0) {
-	$dbname = '../' . $conf['dbname'];
 	$pdo = new \PDO('sqlite:'.$dbname);
 	$sql = "SELECT a.* FROM role as a where a.id = ". $id;
 	$result = $pdo->query($sql);
