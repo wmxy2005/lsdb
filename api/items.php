@@ -2,11 +2,12 @@
 $time_start = microtime(true);
 include 'init.php';
 include 'jwt.php';
-header('Access-Control-Allow-Origin: ' . Allow_Origin);
-header('Access-Control-Allow-Credentials: ' . 'true');
-header('Access-Control-Allow-Headers: ' . 'Content-Type');
-header('Content-Type: ' . 'application/json;charset=utf-8');
-
+if(Allow_Origin_Enable){
+	header('Access-Control-Allow-Origin: ' . Allow_Origin);
+	header('Access-Control-Allow-Credentials: ' . 'true');
+	header('Access-Control-Allow-Headers: ' . 'Content-Type');
+	header('Content-Type: ' . 'application/json;charset=utf-8');
+}
 $created = time();
 $auth = false;
 $token = "";

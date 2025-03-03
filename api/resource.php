@@ -75,7 +75,6 @@ if (!empty($filename)) {
 		header('Content-Type: ' . $mime_type);
 		header('Content-Disposition: inline; filename="' . $file_name . '"');
 		$file_size = filesize($file_path);
-		
 		if (str_ends_with($file_name_lower, '.png') || str_ends_with($file_name_lower, '.jpg') || str_ends_with($file_name_lower, '.jpeg') || str_ends_with($file_name_lower, '.svg') || str_ends_with($file_name_lower, '.webm')){
 			header('Content-Length: ' . $file_size);
 			readfile($file_path);
@@ -117,7 +116,7 @@ if (!empty($filename)) {
 			}
 		}
     } else {
-		include 'core/img/image-not-found.jpg';
+		include '../core/img/image-not-found.jpg';
     }
 }
 ?>

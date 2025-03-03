@@ -7,10 +7,12 @@ $token = "";
 if(array_key_exists('token', $_COOKIE)) {
 	$token = $_COOKIE['token'];
 }
-header('Access-Control-Allow-Origin: ' . Allow_Origin);
-header('Access-Control-Allow-Credentials: ' . 'true');
-header('Access-Control-Allow-Headers: ' . 'Content-Type');
-header('Content-Type: ' . 'application/json;charset=utf-8');
+if(Allow_Origin_Enable){
+	header('Access-Control-Allow-Origin: ' . Allow_Origin);
+	header('Access-Control-Allow-Credentials: ' . 'true');
+	header('Access-Control-Allow-Headers: ' . 'Content-Type');
+	header('Content-Type: ' . 'application/json;charset=utf-8');
+}
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$logout = '';
 	if(array_key_exists('logout', $_REQUEST)) {

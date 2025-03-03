@@ -8,13 +8,14 @@ $GLOBALS['lang'] = new Mess($lang);
 $base_dir = $conf['folder'];
 const DIR_SEP = DIRECTORY_SEPARATOR;
 const TOKEN_EXPIRED = 3600*24*7;
+const Allow_Origin_Enable = false;
 const Allow_Origin = 'http://localhost:8000';
 function getImagePath($base_dir, $base, $cate, $subcate, $name, $filename) {
 	$filepath = $base_dir. DIR_SEP. $base . DIR_SEP . (empty($cate) ? "" : $cate . DIR_SEP) . (empty($subcate) ? "" : $subcate . DIR_SEP) . (empty($name) ? "" : $name . DIR_SEP) . $filename;
 	return $filepath;
 }
 function getImageUrl($base, $cate, $subcate, $name, $filename) {
-	$image_url = '/api/resource?' . 'base=' . $base . (empty($cate) ? "" : '&cata=' . $cate) . (empty($subcate) ? "" : '&subcata=' . $subcate) . (empty($name) ? "" : '&name=' . $name) . '&filename=' . $filename;
+	$image_url = '/api/resource?' . 'base=' . $base . (empty($cate) ? "" : '&category=' . $cate) . (empty($subcate) ? "" : '&subcategory=' . $subcate) . (empty($name) ? "" : '&name=' . $name) . '&filename=' . $filename;
 	return $image_url;
 }
 function resolveAvatarUrl($base_dir, $base, $category) {
@@ -115,7 +116,7 @@ function processDataItem($base_dir, $row) {
 	if(file_exists($filepath)) {
 		$fileExist = true;
 	}else{
-		$filepath = 'core/img/image-not-found.jpg';
+		$filepath = '../core/img/image-not-found.jpg';
 	}
 	list($width, $height) = getimagesize($filepath);
 	$row['thumbnailW'] = $width;
