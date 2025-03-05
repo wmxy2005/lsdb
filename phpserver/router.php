@@ -7,7 +7,7 @@ $ext = isset($pathinfo['extension']) ? $pathinfo['extension'] : '';
 
 if($base == '') {
 	include 'search.php';
-} if($ext == 'php') {
+} else if($ext == 'php') {
 	include $base;
 } else {
 	if (file_exists($base_url)) {

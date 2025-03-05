@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 $warnInfo = [
-	'error' => 'Method not allowed'
+	'errorMessage' => 'Method not allowed'
 ];
 echo json_encode($warnInfo);
 http_response_code(405);

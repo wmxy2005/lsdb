@@ -74,13 +74,20 @@ if($id > 0) {
 					if(file_exists($filepath)) {
 						$fileExist = true;
 					}else{
-						$filepath = 'core/img/image-not-found.jpg';
+						$filepath = IMAGE_NOT_FOUND;
 					}
-					list($width, $height) = getimagesize($filepath);
 					$imageItem['imgIndex'] = $i;
 					$imageItem['value'] = $imageValue;
-					$imageItem['width'] = $width;
-					$imageItem['height'] = $height;
+					list($width, $height) = @getimagesize($filepath);
+					if($width) {
+						$imageItem['width'] = $width;
+						$imageItem['height'] = $height;
+					}else{
+						$filepath = IMAGE_NOT_FOUND;
+						list($width, $height) = getimagesize($filepath);
+						$imageItem['width'] = $width;
+						$imageItem['height'] = $height;
+					}
 					array_push($imgList, $imageItem);
 				}
 			}
@@ -147,7 +154,7 @@ if($id > 0) {
 	}
 }
 $warnInfo = [
-	'error' => 'Method not allowed'
+	'errorMessage' => 'Method not allowed'
 ];
 echo json_encode($warnInfo);
 http_response_code(405);
