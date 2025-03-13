@@ -9,10 +9,10 @@ $base_dir = $conf['folder'];
 const DIR_SEP = DIRECTORY_SEPARATOR;
 const IMAGE_NOT_FOUND = 'core/img/image-not-found.jpg';
 const TOKEN_EXPIRED = 3600*24*7;
-const Allow_Origin_Enable = false;
+const Allow_Origin_Enable = true;
 const Allow_Origin = 'http://localhost:8000';
 function getImagePath($base_dir, $base, $cate, $subcate, $name, $filename) {
-	$filepath = $base_dir. DIR_SEP. (empty($base) ? "" : $base . DIR_SEP) . (empty($cate) ? "" : $cate . DIR_SEP) . (empty($subcate) ? "" : $subcate . DIR_SEP) . (empty($name) ? "" : $name . DIR_SEP) . $filename;
+	$filepath = $base_dir. DIR_SEP. (empty($base) ? "" : $base . DIR_SEP) . (empty($cate) ? "" : $cate . DIR_SEP) . (empty($subcate) ? "" : $subcate . DIR_SEP) . (empty($name) ? "" : $name . DIR_SEP) . (empty($filename) ? "" : $filename);
 	return $filepath;
 }
 function getImageUrl($base, $cate, $subcate, $name, $filename) {
@@ -117,7 +117,7 @@ function processDataItem($base_dir, $row) {
 	if(file_exists($filepath)) {
 		$fileExist = true;
 	}else{
-		$filepath = '../core/img/image-not-found.jpg';
+		$filepath = IMAGE_NOT_FOUND;
 	}
 	list($width, $height) = getimagesize($filepath);
 	$row['thumbnailW'] = $width;

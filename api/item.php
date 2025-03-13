@@ -65,6 +65,14 @@ if($id > 0) {
 		if($row = $result->fetch(\PDO::FETCH_ASSOC)) {
 			$data = processDataItem($base_dir, $row);
 			$imgList = array();
+			$imgSet = array();
+			$fileList = array();
+			$fileItem = array();
+			$fileItem['type'] = 'thumbnail';
+			$fileItem['value'] = $data['thumbnail'];
+			array_push($fileList, $fileItem);
+			$imgSet[$data['thumbnail']] = true;
+			
 			$imageValues = explode(";", $data['images']);
 			for($i=0; $i < count($imageValues); $i++){
 				$imageValue = trim($imageValues[$i]);
@@ -89,9 +97,35 @@ if($id > 0) {
 						$imageItem['height'] = $height;
 					}
 					array_push($imgList, $imageItem);
+					if(!array_key_exists($imageValue, $imgSet)) {
+						$fileItem = array();
+						$fileItem['type'] = 'image';
+						$fileItem['value'] = $imageValue;
+						array_push($fileList, $fileItem);
+						$imgSet[$imageValue] = true;
+					}
 				}
 			}
 			$data['imgList'] = $imgList;
+			
+			$dir = getImagePath($base_dir, $row['base'], $row['category'], $row['subcategory'], $row['name'], '');
+			if (false != ($handle = opendir ( $dir ))) {
+				while ( false !== ($file = readdir ( $handle )) ) {
+					if ($file != "." && $file != ".." && strpos($file,".") && !strpos($file,".txt") && !strpos($file,".html") && !strpos($file,".mp4") && !strpos($file,".wbm")) {
+						if (file_exists( $dir . DIR_SEP . $file)) {
+							if(!array_key_exists($file, $imgSet)) {
+								$fileItem = array();
+								$fileItem['type'] = 'file';
+								$fileItem['value'] = $file;
+								array_push($fileList, $fileItem);
+							}
+						}
+					}
+				}
+				closedir ( $handle );
+			}
+			$data['fileList'] = $fileList;
+			
 			$result = array();
 			$result['success'] = true;
 			$result['data'] = $data;

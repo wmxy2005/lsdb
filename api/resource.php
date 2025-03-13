@@ -169,16 +169,21 @@ if (!empty($filename)) {
 		$destination = getImagePath($base_dir, $base, $cate, $subcate, $name, $filename);
 		$uploadedFile = $_FILES['file'] ?? null;
 		if ($uploadedFile && $uploadedFile['error'] === UPLOAD_ERR_OK) {
+			$success = false;
+			$warn = false;
 			$message = '';
 			if(!file_exists($destination)) {
 				move_uploaded_file($uploadedFile['tmp_name'], $destination);
-				$message = 'Success: ';
+				$success = true;
+				$message = 'Success';
 			}else{
-				$message = 'File exists: ';
+				$warn = true;
+				$message = 'File exists: ' . htmlspecialchars($filename);
 			}
 			$successInfo = [
-				'success' => true,
-				'message' => $message . htmlspecialchars($destination)
+				'success' => $success,
+				'warn' => $warn,
+				'message' => $message
 			];
 			echo json_encode($successInfo);
 			http_response_code(200);
