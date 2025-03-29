@@ -1,6 +1,7 @@
 <?php
 include 'init.php';
 include 'jwt.php';
+header('Access-Control-Allow-Methods: ' . 'GET, POST, OPTIONS, PUT, DELETE');
 header('Access-Control-Allow-Origin: ' . Allow_Origin);
 header('Access-Control-Allow-Credentials: ' . 'true');
 function getDir($dir) {
@@ -123,7 +124,7 @@ if (!empty($filename)) {
 		} else {
 			include IMAGE_NOT_FOUND;
 		}
-	} else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	} else if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'DELETE') {
 		header('Access-Control-Allow-Headers: ' . 'Content-Type');
 		header('Content-Type: ' . 'application/json;charset=utf-8');
 		$created = time();
@@ -166,35 +167,62 @@ if (!empty($filename)) {
 			return;
 		}
 
-		$destination = getImagePath($base_dir, $base, $cate, $subcate, $name, $filename);
-		$uploadedFile = $_FILES['file'] ?? null;
-		if ($uploadedFile && $uploadedFile['error'] === UPLOAD_ERR_OK) {
-			$success = false;
-			$warn = false;
-			$message = '';
-			if(!file_exists($destination)) {
-				move_uploaded_file($uploadedFile['tmp_name'], $destination);
-				$success = true;
-				$message = 'Success';
-			}else{
-				$warn = true;
-				$message = 'File exists: ' . htmlspecialchars($filename);
+		if($_SERVER['REQUEST_METHOD'] == 'POST'){
+			$destination = getImagePath($base_dir, $base, $cate, $subcate, $name, $filename);
+			$uploadedFile = $_FILES['file'] ?? null;
+			if ($uploadedFile && $uploadedFile['error'] === UPLOAD_ERR_OK) {
+				$success = false;
+				$warn = false;
+				$message = '';
+				if(!file_exists($destination)) {
+					move_uploaded_file($uploadedFile['tmp_name'], $destination);
+					$success = true;
+					$message = 'Success';
+				}else{
+					$warn = true;
+					$message = 'File exists: ' . htmlspecialchars($filename);
+				}
+				$successInfo = [
+					'success' => $success,
+					'warn' => $warn,
+					'message' => $message
+				];
+				echo json_encode($successInfo);
+				http_response_code(200);
+			} else {
+				$successInfo = [
+					'errorMessage' => $uploadedFile['error']
+				];
+				echo json_encode($successInfo);
+				http_response_code(405);
 			}
-			$successInfo = [
-				'success' => $success,
-				'warn' => $warn,
-				'message' => $message
-			];
-			echo json_encode($successInfo);
-			http_response_code(200);
-		} else {
-			$successInfo = [
+		}else{
+			$filepath = getImagePath($base_dir, $base, $cate, $subcate, $name, $filename);
+			if (file_exists($filepath)) {
+				$success = false;
+				$warn = false;
+				$message = '';
+				
+				if(unlink($filepath)){
+					$success = true;
+					$message = 'Delete failed';
+				}
+				
+				$successInfo = [
+					'success' => $success,
+					'warn' => $warn,
+					'message' => $message
+				];
+				echo json_encode($successInfo);
+				http_response_code(200);
+				return;
+			}
+			$warnInfo = [
 				'errorMessage' => $uploadedFile['error']
 			];
-			echo json_encode($successInfo);
+			echo json_encode($warnInfo);
 			http_response_code(405);
 		}
-
 	}
 }
 ?>
