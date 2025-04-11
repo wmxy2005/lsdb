@@ -54,7 +54,7 @@ if(array_key_exists('QUERY_STRING', $_SERVER)){
 	parse_str($_SERVER['QUERY_STRING'], $queries);
 }
 if(array_key_exists('id', $queries)) {
-	$id = $queries['id'];
+	$id = intval($queries['id']);
 }
 
 if ($id > 0) {

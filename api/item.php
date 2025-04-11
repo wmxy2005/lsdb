@@ -55,14 +55,16 @@ if(array_key_exists('QUERY_STRING', $_SERVER)){
 	parse_str($_SERVER['QUERY_STRING'], $queries);
 }
 if(array_key_exists('id', $queries)) {
-	$id = $queries['id'];
+	$id = intval($queries['id']);
 }
 if($id > 0) {
 	$pdo = new \PDO('sqlite:'.$dbname);
 	if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-		$sql = "SELECT a.*, b.id as favi FROM items as a left join itemfavi as b on a.id = b.itemId and b.expired=0 where a.id = ". $id;
-		$result = $pdo->query($sql);
-		if($row = $result->fetch(\PDO::FETCH_ASSOC)) {
+		$sql = "SELECT a.*, b.id as favi FROM items as a left join itemfavi as b on a.id = b.itemId and b.expired=0 where a.id = :itemId";
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindValue(':itemId', $id, PDO::PARAM_INT);
+		$stmt->execute();
+		if($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 			$data = processDataItem($base_dir, $row);
 			$imgList = array();
 			$imgSet = array();
@@ -111,11 +113,14 @@ if($id > 0) {
 			$dir = getImagePath($base_dir, $row['base'], $row['category'], $row['subcategory'], $row['name'], '');
 			if (false != ($handle = opendir ( $dir ))) {
 				while ( false !== ($file = readdir ( $handle )) ) {
-					if ($file != "." && $file != ".." && strpos($file,".") && !strpos($file,".txt") && !strpos($file,".html") && !strpos($file,".mp4") && !strpos($file,".wbm")) {
+					if ($file != "." && $file != ".." && strpos($file,".") && !strpos($file,".txt") && !strpos($file,".html")) {
 						if (file_exists( $dir . DIR_SEP . $file)) {
 							if(!array_key_exists($file, $imgSet)) {
 								$fileItem = array();
 								$fileItem['type'] = 'file';
+								if(strpos($file,".mp4") || strpos($file,".wbm")){
+									$fileItem['thumbUrl'] = '/logo.svg';
+								}
 								$fileItem['value'] = $file;
 								array_push($fileList, $fileItem);
 							}

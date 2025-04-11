@@ -52,13 +52,22 @@ if(!$auth){
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$input = file_get_contents('php://input');
 	$decoded_input = json_decode($input, true);
-	$itemId = $decoded_input['itemId'];
+	$itemId = intval($decoded_input['itemId']);
 	$expired = $decoded_input['expired'];
 	if($itemId > 0) {
-		$dbname = '../' . $conf['dbname'];
 		$pdo = new \PDO('sqlite:'. $dbname);
-		$res = $pdo->exec("insert into itemfavi(itemId) select " . $itemId ." where not exists(select id from itemfavi where uId = 0 and itemId = " . $itemId .")");
-		$pdo->exec("update itemfavi set expired=" . $expired . ", datetime=(datetime(CURRENT_TIMESTAMP,'localtime')) where uId = 0 and itemId = " . $itemId );
+		
+		$sql = "insert into itemfavi(itemId) select :itemId where not exists(select id from itemfavi where uId = 0 and itemId = :itemId)";
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindValue(':itemId', $itemId, PDO::PARAM_INT);
+		$stmt->execute();
+		
+		$sql2 = "update itemfavi set expired= :expired, datetime=(datetime(CURRENT_TIMESTAMP,'localtime')) where uId = 0 and itemId = :itemId";
+		$stmt2 = $pdo->prepare($sql2);
+		$stmt2->bindValue(':expired', $expired, PDO::PARAM_BOOL);
+		$stmt2->bindValue(':itemId', $itemId, PDO::PARAM_INT);
+		$stmt2->execute();
+		
 		$updateInfo = [
 			'success' => true
 		];

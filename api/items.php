@@ -71,15 +71,16 @@ $type = '';
 $sort = '';
 $display = 0;
 
+$params = array();
 $queries = array();
 if(array_key_exists('QUERY_STRING', $_SERVER)){
 	parse_str($_SERVER['QUERY_STRING'], $queries);
 }
 if(array_key_exists('start', $queries)) {
-	$start = $queries['start'];
+	$start = intval($queries['start']);
 }
 if(array_key_exists('page', $queries)) {
-	$current = $queries['page'];
+	$current = intval($queries['page']);
 }
 if(array_key_exists('keyword', $queries)) {
 	$keywordStr = trim(rawurldecode($queries['keyword']));
@@ -136,85 +137,93 @@ if(array_key_exists('favi', $queries)) {
 $cond = " WHERE a.id > ". $start;
 $role_cond = "";
 if(!empty($base)) {
-	$cond = $cond . " and a.base = '" . $base ."'";
+	$params[':base'] = $base;
+	$cond = $cond . " AND a.base = :base";
 }
 if(!empty($keyword)) {
 	$arrayConds = '';
 	for($i=0; $i < count($keyword); $i++){
 		if(strlen($keyword[$i])>0){
-			$arrayConds = $arrayConds . (strlen($arrayConds) > 0 ? ('or' == $matchMode ? " or " : " and "): "") . "(a.name like '%" . $keyword[$i] . "%' or a.title like '%" . $keyword[$i] . "%' or a.tag like '%" . $keyword[$i] . "%' or a.tag2 like '%" . $keyword[$i] . "%' or a.tag3 like '%" . $keyword[$i] . "%' )";
-			$role_cond = $role_cond . (strlen($role_cond) > 0 ? ' or ': '') . "a.name like '%" . $keyword[$i] ."%'";
+			$params[':keyword'.$i] = '%' . $splitStr[$i] . '%';
+			$arrayConds = $arrayConds . (strlen($arrayConds) > 0 ? ('or' == $matchMode ? " OR " : " AND "): "") . "(a.name LIKE :keyword" . $i . " OR a.title like :keyword" . $i . " OR a.tag like :keyword" . $i . " OR a.tag2 like :keyword" . $i . " OR a.tag3 like :keyword" . $i . " )";
+			$role_cond = $role_cond . (strlen($role_cond) > 0 ? ' OR ': '') . "a.name LIKE '%" . $keyword[$i] ."%'";
 		}
 	}
-	$cond = $cond . " and (" . $arrayConds .")";
+	$cond = $cond . " AND (" . $arrayConds .")";
 }
 if(!empty($category)) {
 	$arrayConds = '';
 	for($i=0; $i < count($category); $i++){
 		if(strlen($category[$i])>0){
-			$arrayConds = $arrayConds . (strlen($arrayConds) > 0 ? ('or' == $matchMode ? " or " : " and "): "") . "a.category = '" . $category[$i] . "'";
+			$params[':category'] = $category[$i];
+			$arrayConds = $arrayConds . (strlen($arrayConds) > 0 ? ('or' == $matchMode ? " OR " : " AND "): "") . "a.category = :category";
 		}
 	}
-	$cond = $cond . " and (" . $arrayConds .")";
+	$cond = $cond . " AND (" . $arrayConds .")";
 }
 if(!empty($tag)) {
 	$arrayConds = '';
 	for($i=0; $i < count($tag); $i++){
 		if(strlen($tag[$i])>0){
-			$arrayConds = $arrayConds . (strlen($arrayConds) > 0 ? ('or' == $matchMode ? " or " : " and "): "") . "(a.tag like '%;" . $tag[$i] . ";%' or a.tag2 like '%;" . $tag[$i] . ";%' or a.tag3 like '%;" . $tag[$i] . ";%' )";
-			$role_cond = $role_cond . (strlen($role_cond) > 0 ? ' or ': '') . "a.name like '%;" . $tag[$i] .";%'";
+			$params[':tag'.$i] = '%;' . $tag[$i] . ';%';
+			$arrayConds = $arrayConds . (strlen($arrayConds) > 0 ? ('or' == $matchMode ? " OR " : " AND "): "") . "(a.tag like :tag" . $i . " OR a.tag2 like :tag" . $i . " OR a.tag3 like :tag" . $i . " )";
+			$role_cond = $role_cond . (strlen($role_cond) > 0 ? ' OR ': '') . "a.name LIKE :tag" . $i ."";
 		}
 	}
-	$cond = $cond . " and (" . $arrayConds .")";
+	$cond = $cond . " AND (" . $arrayConds .")";
 }
 if(!empty($dateFrom)) {
-	$cond = $cond . " and a.date >= '" . $dateFrom ."'";
+	$params[':dateFrom'] = $dateFrom;
+	$cond = $cond . " AND a.date >= :dateFrom";
 }
 if(!empty($dateTo)) {
-	$cond = $cond . " and a.date <= '" . $dateTo ."'";
+	$params[':dateTo'] = $dateTo;
+	$cond = $cond . " AND a.date <= :dateTo";
 }
 
 if(strlen($type) > 0) {
-	$cond = $cond . " and a.type = " . $type ."";
+	$cond = $cond . " AND a.type = " . intval($type) ."";
 }
-if($favi){
-	$cond = $cond . " and b.id is not null " ."";
+if($favi > 0){
+	$cond = $cond . " AND b.id IS NOT NULL " ."";
 }
 
 $sort_cond = "";
 $begin = $start + $pageSize*($current-1);
 if($favi > 0) {
-	$sort_cond = "b.datetime desc, a.date desc, a.id desc";
+	$sort_cond = "b.datetime DESC, a.date DESC, a.id DESC";
 	if($sort == 'createAt'){
-		$sort_cond = "b.id desc, a.date desc, a.id desc";
+		$sort_cond = "b.id DESC, a.date DESC, a.id DESC";
 	}
-	$cond = $cond . " and b.id not null";
+	$cond = $cond . " AND b.id NOT NULL";
 }else{
-	$sort_cond = "a.date desc, a.id desc";
+	$sort_cond = "a.date DESC, a.id DESC";
 	if($sort == 'createAt'){
-		$sort_cond = "a.id desc";
+		$sort_cond = "a.id DESC";
 	}
 }
-
+ 
 $pdo = new \PDO('sqlite:'.$dbname);
 
-$sql = "SELECT count(1) FROM items as a left join itemfavi as b on a.id = b.itemId and b.expired=0 ". $cond;
-$queryCount = $pdo->query($sql);
-$total = $queryCount->fetchColumn();
+$sql1 = "SELECT COUNT(1) FROM items AS a LEFT JOIN itemfavi AS b ON a.id = b.itemId AND b.expired=0 ". $cond;
+$stmt1 = $pdo->prepare($sql1);
+$stmt1->execute($params);
+$total = $stmt1->fetchColumn();
 $pages = ceil($total / $pageSize);
 
-$sql = "SELECT a.*, b.id as favi FROM items as a left join itemfavi as b on a.id = b.itemId and b.expired=0 ". $cond ." order by ".$sort_cond." limit ". $begin . ", ".$pageSize;
-$query = $pdo->query($sql);
+$sql2 = "SELECT a.*, b.id AS favi FROM items as a LEFT JOIN itemfavi AS b ON a.id = b.itemId and b.expired=0 ". $cond ." ORDER BY ".$sort_cond." LIMIT ". $begin . ", ".$pageSize;
+$stmt2 = $pdo->prepare($sql2);
+$stmt2->execute($params);
 $list = array();
-while($row = $query->fetch(\PDO::FETCH_ASSOC)){
+while($row = $stmt2->fetch(\PDO::FETCH_ASSOC)){
 	array_push($list, processDataItem($base_dir, $row));
 }
 
-$sql2 = "SELECT a.* FROM role as a WHERE ". (empty($role_cond) ? "1 = 2" : $role_cond) ." ORDER BY a.id desc;";
-
-$queryRole = $pdo->query($sql2);
+$sql3 = "SELECT a.* FROM role AS a WHERE ". (empty($role_cond) ? "1 = 2" : $role_cond) ." ORDER BY a.id DESC;";
+$stmt3 = $pdo->prepare($sql3);
+$stmt3->execute($params);
 $roleList = array();
-while ($row = $queryRole->fetch(\PDO::FETCH_ASSOC)){
+while ($row = $stmt3->fetch(\PDO::FETCH_ASSOC)){
 	$nameValues = explode(";", $row['name']);
 	$roleName = '';
 	for($index=0; $index < count($nameValues); $index++){
@@ -270,6 +279,10 @@ while ($row = $queryRole->fetch(\PDO::FETCH_ASSOC)){
 $time_cost = round(microtime(true) - $time_start, 3);
 
 $data = array();
+$data['params'] = $params;
+$data['sql1'] = $sql1;
+$data['sql2'] = $sql2;
+$data['sql3'] = $sql3;
 $data['base'] = $base;
 $data['category'] = $category;
 $data['subcategory'] = $subcategory;
