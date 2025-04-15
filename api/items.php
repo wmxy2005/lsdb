@@ -72,6 +72,7 @@ $sort = '';
 $display = 0;
 
 $params = array();
+$paramsRole = array();
 $queries = array();
 if(array_key_exists('QUERY_STRING', $_SERVER)){
 	parse_str($_SERVER['QUERY_STRING'], $queries);
@@ -145,8 +146,9 @@ if(!empty($keyword)) {
 	for($i=0; $i < count($keyword); $i++){
 		if(strlen($keyword[$i])>0){
 			$params[':keyword'.$i] = '%' . $splitStr[$i] . '%';
+			$paramsRole[':keyword'.$i] = '%' . $splitStr[$i] . '%';
 			$arrayConds = $arrayConds . (strlen($arrayConds) > 0 ? ('or' == $matchMode ? " OR " : " AND "): "") . "(a.name LIKE :keyword" . $i . " OR a.title like :keyword" . $i . " OR a.tag like :keyword" . $i . " OR a.tag2 like :keyword" . $i . " OR a.tag3 like :keyword" . $i . " )";
-			$role_cond = $role_cond . (strlen($role_cond) > 0 ? ' OR ': '') . "a.name LIKE '%" . $keyword[$i] ."%'";
+			$role_cond = $role_cond . (strlen($role_cond) > 0 ? ' OR ': '') . "a.name LIKE :keyword" . $i ."";
 		}
 	}
 	$cond = $cond . " AND (" . $arrayConds .")";
@@ -166,6 +168,7 @@ if(!empty($tag)) {
 	for($i=0; $i < count($tag); $i++){
 		if(strlen($tag[$i])>0){
 			$params[':tag'.$i] = '%;' . $tag[$i] . ';%';
+			$paramsRole[':tag'.$i] = '%;' . $tag[$i] . ';%';
 			$arrayConds = $arrayConds . (strlen($arrayConds) > 0 ? ('or' == $matchMode ? " OR " : " AND "): "") . "(a.tag like :tag" . $i . " OR a.tag2 like :tag" . $i . " OR a.tag3 like :tag" . $i . " )";
 			$role_cond = $role_cond . (strlen($role_cond) > 0 ? ' OR ': '') . "a.name LIKE :tag" . $i ."";
 		}
@@ -221,7 +224,7 @@ while($row = $stmt2->fetch(\PDO::FETCH_ASSOC)){
 
 $sql3 = "SELECT a.* FROM role AS a WHERE ". (empty($role_cond) ? "1 = 2" : $role_cond) ." ORDER BY a.id DESC;";
 $stmt3 = $pdo->prepare($sql3);
-$stmt3->execute($params);
+$stmt3->execute($paramsRole);
 $roleList = array();
 while ($row = $stmt3->fetch(\PDO::FETCH_ASSOC)){
 	$nameValues = explode(";", $row['name']);

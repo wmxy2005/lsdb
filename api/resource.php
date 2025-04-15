@@ -122,7 +122,14 @@ if (!empty($filename)) {
 				}
 			}
 		} else {
-			include IMAGE_NOT_FOUND;
+			$file_path = IMAGE_NOT_FOUND;
+			$file_name = 'image-not-found.jpg';
+			header('Content-Type: ' . 'image/jpeg');
+			header('Content-Disposition: inline; filename="' . $file_name . '"');
+			$file_size = filesize($file_path);
+			header('Content-Length: ' . $file_size);
+			readfile(IMAGE_NOT_FOUND);
+			return;
 		}
 	} else if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'DELETE') {
 		header('Access-Control-Allow-Headers: ' . 'Content-Type');
