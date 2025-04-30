@@ -1,13 +1,13 @@
 <?php
-require_once 'core/config.test.php';
-require_once 'core/mess.php';
+require_once '../core/config.my.php';
+require_once '../core/mess.php';
 $conf = Config::$config;
 $lang = $conf['lang'];
-$dbname = './' . $conf['dbname'];
+$dbname = '../' . $conf['dbname'];
 $GLOBALS['lang'] = new Mess($lang);
 $base_dir = $conf['folder'];
 const DIR_SEP = DIRECTORY_SEPARATOR;
-const IMAGE_NOT_FOUND = 'core/img/image-not-found.jpg';
+const IMAGE_NOT_FOUND = '../core/img/image-not-found.jpg';
 const TOKEN_EXPIRED = 3600*24*7;
 const Allow_Origin_Enable = true;
 const Allow_Origin = 'http://localhost:8000';
@@ -151,9 +151,11 @@ function processDataItem($base_dir, $row) {
 	}else{
 		$filepath = IMAGE_NOT_FOUND;
 	}
-	list($width, $height) = getimagesize($filepath);
-	$row['thumbnailW'] = $width;
-	$row['thumbnailH'] = $height;
+	list($width, $height) = @getimagesize($filepath);
+	if($width){
+		$row['thumbnailW'] = $width;
+		$row['thumbnailH'] = $height;
+	}
 	
 	$filepath = getImagePath($base_dir, $row['base'], $row['category'], $row['subcategory'], $row['name'], $row['roll']);
 	if(!file_exists($filepath)) {

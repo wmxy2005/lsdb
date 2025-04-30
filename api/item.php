@@ -6,8 +6,8 @@ if(Allow_Origin_Enable){
 	header('Access-Control-Allow-Origin: ' . Allow_Origin);
 	header('Access-Control-Allow-Credentials: ' . 'true');
 	header('Access-Control-Allow-Headers: ' . 'Content-Type');
-	header('Content-Type: ' . 'application/json;charset=utf-8');
 }
+header('Content-Type: ' . 'application/json;charset=utf-8');
 
 $created = time();
 $auth = false;
@@ -86,6 +86,7 @@ if($id > 0) {
 					}else{
 						$filepath = IMAGE_NOT_FOUND;
 					}
+					list($width, $height) = @getimagesize($filepath);
 					$imageItem['imgIndex'] = $i;
 					$imageItem['value'] = $imageValue;
 					list($width, $height) = @getimagesize($filepath);
@@ -119,7 +120,7 @@ if($id > 0) {
 								$fileItem = array();
 								$fileItem['type'] = 'file';
 								if(strpos($file,".mp4") || strpos($file,".wbm")){
-									$fileItem['thumbUrl'] = '/logo.svg';
+									$fileItem['thumbUrl'] = '/video.svg';
 								}
 								$fileItem['value'] = $file;
 								array_push($fileList, $fileItem);

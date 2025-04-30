@@ -6,7 +6,6 @@ if(Allow_Origin_Enable){
 	header('Access-Control-Allow-Origin: ' . Allow_Origin);
 	header('Access-Control-Allow-Credentials: ' . 'true');
 	header('Access-Control-Allow-Headers: ' . 'Content-Type');
-	header('Content-Type: ' . 'application/json;charset=utf-8');
 }
 $auth = false;
 $token = "";
@@ -51,6 +50,12 @@ if(array_key_exists('QUERY_STRING', $_SERVER)){
 }
 if(array_key_exists('start', $queries)) {
 	$start = intval($queries['start']);
+}
+if(array_key_exists('pageSize', $queries)) {
+	$pageSize = $queries['pageSize'];
+}
+if(array_key_exists('pageSize', $queries)) {
+	$pageSize = $queries['pageSize'];
 }
 if(array_key_exists('page', $queries)) {
 	$current = intval($queries['page']);
@@ -275,7 +280,7 @@ $data['pages'] = $pages;
 $data['total'] = $total;
 $data['costTime'] = $time_cost;
 $data['roleList'] = $roleList;
-$data['title'] = 'all';
+$data['title'] = !empty($keyword) ? $keyword[0] : (!empty($category) ? $category[0] : (!empty($tag) ? $tag[0] : 'all'));
 $data['message'] = $total . ' record(s), ' . $pages . ' page(s)';
 $data['list'] = $list;
 $result['roleList'] = $roleList;
