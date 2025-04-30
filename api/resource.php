@@ -43,6 +43,7 @@ $cate = '';
 $subcate = '';
 $name = '';
 $filename = '';
+$force = false;
 $queries = array();
 parse_str($_SERVER['QUERY_STRING'], $queries);
 if(array_key_exists('base', $queries))
@@ -55,6 +56,8 @@ if(array_key_exists('name', $queries))
 	$name = $queries['name'];
 if(array_key_exists('filename', $queries))
 	$filename = $queries['filename'];
+if(array_key_exists('force', $queries))
+	$force = $queries['force'] == 'true';
 if (!empty($filename)) {
 	if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 		$fileExist = false;
@@ -122,13 +125,17 @@ if (!empty($filename)) {
 				}
 			}
 		} else {
-			$file_path = IMAGE_NOT_FOUND;
-			$file_name = 'image-not-found.jpg';
-			header('Content-Type: ' . 'image/jpeg');
-			header('Content-Disposition: inline; filename="' . $file_name . '"');
-			$file_size = filesize($file_path);
-			header('Content-Length: ' . $file_size);
-			readfile(IMAGE_NOT_FOUND);
+			if($force) {
+				$file_path = IMAGE_NOT_FOUND;
+				$file_name = 'image-not-found.jpg';
+				header('Content-Type: ' . 'image/jpeg');
+				header('Content-Disposition: inline; filename="' . $file_name . '"');
+				$file_size = filesize($file_path);
+				header('Content-Length: ' . $file_size);
+				readfile(IMAGE_NOT_FOUND);
+			} else {
+				http_response_code(404);
+			}
 			return;
 		}
 	} else if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'DELETE') {

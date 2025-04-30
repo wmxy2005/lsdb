@@ -1,6 +1,6 @@
 <?php
-include 'init.php';
-include 'jwt.php';
+require_once 'init.php';
+require_once 'jwt.php';
 
 $created = time();
 $token = "";

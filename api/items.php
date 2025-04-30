@@ -1,48 +1,20 @@
 <?php
 $time_start = microtime(true);
-include 'init.php';
-include 'jwt.php';
+require_once 'init.php';
+require_once 'jwt.php';
 if(Allow_Origin_Enable){
 	header('Access-Control-Allow-Origin: ' . Allow_Origin);
 	header('Access-Control-Allow-Credentials: ' . 'true');
 	header('Access-Control-Allow-Headers: ' . 'Content-Type');
 	header('Content-Type: ' . 'application/json;charset=utf-8');
 }
-$created = time();
 $auth = false;
 $token = "";
 if(array_key_exists('token', $_COOKIE)) {
 	$token = $_COOKIE['token'];
 }
-if(!empty($token)){
-	$decodedPayload = JWT::verifyJWT($token);
-	if($decodedPayload){
-		$storeUserId = 0;
-		$storeCreated = 0;
-		if(array_key_exists('userId', $decodedPayload)) {
-			$storeUserId = $decodedPayload['userId'];
-		}
-		if(array_key_exists('created', $decodedPayload)) {
-			$storeCreated = $decodedPayload['created'];
-		}
-		if($storeUserId > 0) {
-			if ($created - $storeCreated > TOKEN_EXPIRED) {
-				$userInfo = [
-					'errorMessage' => 'Expired'
-				];
-				echo json_encode($userInfo);
-				http_response_code(200);
-				return;
-			}else{
-				$auth = true;
-			}
-		}
-	}
-}
-if(!$auth){
-	$userInfo = [
-		'errorMessage' => 'Unauthorized'
-	];
+$userInfo = checkToken($token);
+if(!$userInfo['auth']){
 	echo json_encode($userInfo);
 	http_response_code(200);
 	return;

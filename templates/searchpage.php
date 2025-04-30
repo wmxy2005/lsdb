@@ -141,7 +141,7 @@ $item = $type_list[$row];
 				}
 			}
 		}
-		$imgUrl = 'resource?base=' . $conf['role'] . '&name=e'. $role['id'].'&filename='. $roleImgeSrc;
+		$imgUrl = 'resource?force=true&base=' . $conf['role'] . '&name=e'. $role['id'].'&filename='. $roleImgeSrc;
 		echo '<img class="rounded-circle me-1" src="' . $imgUrl . '" alt="" width="24" height="24">';
 	}
 	if(!empty($searchWord)) {
@@ -187,10 +187,10 @@ $item = $res[$row];
 				width: 100%;
 				z-index: 1;
 			">			
-			<img class="resolution-value" src="resource?base=fpvr&filename=icon.svg" style="width: 59px; height: 17px;"></img>
+			<img class="resolution-value" src="resource?force=true&base=fpvr&filename=icon.svg" style="width: 59px; height: 17px;"></img>
 			</div> --> 
 			<picture>
-			<img class="img-fluid cover" src="<?php echo 'resource?base='. $item['base'].'&cata='. $item['category'] .'&subcata='.$item['subcategory'].'&name='. $item['name'].'&filename='. $item['thumbnail']; ?>">
+			<img class="img-fluid cover" src="<?php echo 'resource?force=true&base='. $item['base'].'&cata='. $item['category'] .'&subcata='.$item['subcategory'].'&name='. $item['name'].'&filename='. $item['thumbnail']; ?>">
 			</picture>
 			<?php
 			if (!empty($item['roll'])) {

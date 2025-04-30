@@ -76,7 +76,7 @@ for ($i=0; $i < count($tags3); $i++) {
 if (!empty($trailer)) {
 ?>
 <source id="video_url" style="display: none;" src="<?php echo 'resource?base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $trailer; ?>"></source>
-<source id="poster_url" style="display: none;" src="<?php echo 'resource?base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $thumbnail; ?>"></source>
+<source id="poster_url" style="display: none;" src="<?php echo 'resource?force=true&base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $thumbnail; ?>"></source>
 <div id="xplayer"></div>
 <?php
 }
@@ -99,13 +99,15 @@ if (!empty($trailer) && 1 == 2) {
 <?php
 $all_images = explode(";", $images);
 for ($i=0; $i < count($all_images); $i++) {
-	$imageUrl = 'resource?base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $all_images[$i];
+	$imageUrl = 'resource?force=true&base='. $base.'&cata='. $category .'&subcata='.$subcategory.'&name='. $name.'&filename='. $all_images[$i];
 	$conf = Config::$config;
 	$base_dir = $conf['folder'];
 	$filepath = getImagePath($base_dir, $base, $category, $subcategory, $name, $all_images[$i]);
 	if (file_exists($filepath)) {
-		list($width, $height) = getimagesize($filepath);
-		echo ($i == 0 ? '':'') . '<a data-pswp-src="'. $imageUrl .'" data-pswp-width="' . $width .'" data-pswp-height="' . $height .'"><img class="img-fluid" src="'. $imageUrl .'"/></a>';
+		list($width, $height) = @getimagesize($filepath);
+		if($width) {
+			echo ($i == 0 ? '':'') . '<a data-pswp-src="'. $imageUrl .'" data-pswp-width="' . $width .'" data-pswp-height="' . $height .'"><img class="img-fluid" src="'. $imageUrl .'"/></a>';
+		}
 	} else {
 		echo ($i == 0 ? '':'') . '<img class="img-fluid" src="'. $imageUrl .'"/>';
 	}

@@ -11,12 +11,44 @@ const IMAGE_NOT_FOUND = 'core/img/image-not-found.jpg';
 const TOKEN_EXPIRED = 3600*24*7;
 const Allow_Origin_Enable = true;
 const Allow_Origin = 'http://localhost:8000';
+
+function checkToken($token) {
+	$created = time();
+	$userInfo = array();
+	$auth = false;
+	$errorMessage = 'Unauthorized';
+	if(!empty($token)){
+		$decodedPayload = JWT::verifyJWT($token);
+		if($decodedPayload){
+			$storeUserId = 0;
+			$storeCreated = 0;
+			if(array_key_exists('userId', $decodedPayload)) {
+				$storeUserId = $decodedPayload['userId'];
+			}
+			if(array_key_exists('created', $decodedPayload)) {
+				$storeCreated = $decodedPayload['created'];
+			}
+			if($storeUserId > 0) {
+				if ($created - $storeCreated > TOKEN_EXPIRED) {
+					$errorMessage = 'Expired';
+				}else{
+					$auth = true;
+					$errorMessage = '';
+				}
+			}
+		}
+	}
+	$userInfo['errorMessage'] = $errorMessage;
+	$userInfo['auth'] = $auth;
+	return $userInfo;
+}
+
 function getImagePath($base_dir, $base, $cate, $subcate, $name, $filename) {
 	$filepath = $base_dir. DIR_SEP. (empty($base) ? "" : $base . DIR_SEP) . (empty($cate) ? "" : $cate . DIR_SEP) . (empty($subcate) ? "" : $subcate . DIR_SEP) . (empty($name) ? "" : $name . DIR_SEP) . (empty($filename) ? "" : $filename);
 	return $filepath;
 }
 function getImageUrl($base, $cate, $subcate, $name, $filename) {
-	$image_url = '/api/resource?' . 'base=' . $base . (empty($cate) ? "" : '&category=' . $cate) . (empty($subcate) ? "" : '&subcategory=' . $subcate) . (empty($name) ? "" : '&name=' . $name) . '&filename=' . $filename;
+	$image_url = '/api/resource?force=true&' . 'base=' . $base . (empty($cate) ? "" : '&category=' . $cate) . (empty($subcate) ? "" : '&subcategory=' . $subcate) . (empty($name) ? "" : '&name=' . $name) . '&filename=' . $filename;
 	return $image_url;
 }
 function resolveAvatarUrl($base_dir, $base, $category) {
