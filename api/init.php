@@ -1,14 +1,15 @@
 <?php
-require_once '../core/config.my.php';
-require_once '../core/mess.php';
+require_once 'core/config.test.php';
+require_once 'core/mess.php';
 $conf = Config::$config;
 $lang = $conf['lang'];
-$dbname = '../' . $conf['dbname'];
+$dbname = '' . $conf['dbname'];
 $GLOBALS['lang'] = new Mess($lang);
 $base_dir = $conf['folder'];
 const DIR_SEP = DIRECTORY_SEPARATOR;
-const IMAGE_NOT_FOUND = '../core/img/image-not-found.jpg';
+const IMAGE_NOT_FOUND = 'core/img/image-not-found.jpg';
 const TOKEN_EXPIRED = 3600*24*7;
+const TOKEN_REFRESH = 3600*24*2;
 const Allow_Origin_Enable = true;
 const Allow_Origin = 'http://localhost:8000';
 
@@ -29,11 +30,17 @@ function checkToken($token) {
 				$storeCreated = $decodedPayload['created'];
 			}
 			if($storeUserId > 0) {
+				header('X-Token-Created: ' . $storeCreated);
 				if ($created - $storeCreated > TOKEN_EXPIRED) {
 					$errorMessage = 'Expired';
 				}else{
 					$auth = true;
 					$errorMessage = '';
+					if ($created - $storeCreated > TOKEN_REFRESH) {
+						$decodedPayload['created'] = $created;
+						$jwt = JWT::generateJWT($decodedPayload);
+						setcookie('token', $jwt);
+					}
 				}
 			}
 		}
