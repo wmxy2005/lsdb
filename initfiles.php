@@ -131,10 +131,10 @@ function processDetail($pdo, $base, $dir, $category, $subcategory, $file, $updat
     }
 	$tag = trim($tag);
 	if(!empty($tag)){
-		if(!str_starts_with($tag, ';')){
+		if(!my_str_starts_with($tag, ';')){
 			$tag = ';' . $tag;
 		}
-		if(!str_ends_with($tag, ';')){
+		if(!my_str_ends_with($tag, ';')){
 			$tag = $tag . ';';
 		}
 	}

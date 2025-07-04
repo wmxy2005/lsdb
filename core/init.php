@@ -8,7 +8,7 @@ class TimeInit
    }
 }
 $time_init = new TimeInit();
-require_once 'core/config.my.php';
+require_once 'core/config.test.php';
 require_once 'core/mess.php';
 const DIR_SEP = DIRECTORY_SEPARATOR;
 $conf = Config::$config;
@@ -124,13 +124,13 @@ function getImageUrl($base, $cate, $subcate, $name, $filename) {
 	$image_url = 'resource?' . 'base=' . $base . (empty($cate) ? "" : '&cata=' . $cate) . (empty($subcate) ? "" : '&subcata=' . $subcate) . (empty($name) ? "" : '&name=' . $name) . '&filename=' . $filename;
 	return $image_url;
 }
-function str_starts_with($haystack, $needle) {
+function my_str_starts_with($haystack, $needle) {
 	if ( '' === $needle ) {
 		return true;
 	}
 	return 0 === strpos($haystack, $needle);
 }
-function str_ends_with($haystack, $needle) {
+function my_str_ends_with($haystack, $needle) {
 	if ( '' === $haystack && '' !== $needle ) {
 		return false;
 	}

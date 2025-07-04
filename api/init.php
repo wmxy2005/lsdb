@@ -170,13 +170,13 @@ function processDataItem($base_dir, $row) {
 	}
 	return $row;
 }
-function str_starts_with($haystack, $needle) {
+function my_str_starts_with($haystack, $needle) {
 	if ( '' === $needle ) {
 		return true;
 	}
 	return 0 === strpos($haystack, $needle);
 }
-function str_ends_with($haystack, $needle) {
+function my_str_ends_with($haystack, $needle) {
 	if ( '' === $haystack && '' !== $needle ) {
 		return false;
 	}

@@ -72,14 +72,14 @@ if (!empty($filename)) {
 		$file_name = $filename;
 		$file_name_lower = strtolower($filepath);
 		$mime_type = mime_content_type($file_path);
-		if(str_ends_with($file_name_lower, '.svg')){
+		if(my_str_ends_with($file_name_lower, '.svg')){
 			$mime_type = 'image/svg+xml';
 		}
 		header('Content-Type: ' . $mime_type);
 		header('Content-Disposition: inline; filename="' . $file_name . '"');
 		$file_size = filesize($file_path);
 		
-		if (str_ends_with($file_name_lower, '.png') || str_ends_with($file_name_lower, '.jpg') || str_ends_with($file_name_lower, '.jpeg') || str_ends_with($file_name_lower, '.svg') || str_ends_with($file_name_lower, '.webm')){
+		if (my_str_ends_with($file_name_lower, '.png') || my_str_ends_with($file_name_lower, '.jpg') || my_str_ends_with($file_name_lower, '.jpeg') || my_str_ends_with($file_name_lower, '.svg') || my_str_ends_with($file_name_lower, '.webm')){
 			header('Content-Length: ' . $file_size);
 			readfile($file_path);
 			// $filer = file_get_contents($file_path);
