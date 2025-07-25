@@ -153,7 +153,7 @@ function processDataItem($base_dir, $row) {
 	
 	$row['isFavi'] = $row['favi'] > 0;
 	$filepath = getImagePath($base_dir, $row['base'], $row['category'], $row['subcategory'], $row['name'], $row['thumbnail']);
-	if(file_exists($filepath)) {
+	if(!empty($filename) && file_exists($filepath)) {
 		$fileExist = true;
 	}else{
 		$filepath = IMAGE_NOT_FOUND;
