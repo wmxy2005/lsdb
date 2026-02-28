@@ -171,15 +171,19 @@ if($favi > 0){
 $sort_cond = "";
 $begin = $start + $pageSize*($current-1);
 if($favi > 0) {
-	$sort_cond = "b.datetime DESC, a.date DESC, a.id DESC";
+	$sort_cond = "b.id DESC, a.date DESC, a.id DESC";
 	if($sort == 'createAt'){
 		$sort_cond = "b.id DESC, a.date DESC, a.id DESC";
+	}else if($sort == 'date'){
+		$sort_cond = "b.datetime DESC, a.date DESC, a.id DESC";
 	}
 	$cond = $cond . " AND b.id NOT NULL";
 }else{
-	$sort_cond = "a.date DESC, a.id DESC";
+	$sort_cond = "a.id DESC";
 	if($sort == 'createAt'){
 		$sort_cond = "a.id DESC";
+	}else if($sort == 'date'){
+		$sort_cond = "a.date DESC, a.id DESC";
 	}
 }
  
