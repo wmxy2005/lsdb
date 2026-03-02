@@ -1,4 +1,13 @@
 <?php
+function getSystemCpuUsageWindows() {
+    $wmi = new COM('winmgmts://./root/cimv2');
+    $cpus = $wmi->ExecQuery('SELECT * FROM Win32_PerfFormattedData_PerfOS_Processor WHERE Name="_Total"');
+    foreach ($cpus as $cpu) {
+        return $cpu->PercentProcessorTime; // 当前 CPU 使用率
+    }
+    return 0;
+}
+
 $time_start = microtime(true);
 include 'init.php';
 if(Allow_Origin_Enable){
@@ -8,7 +17,8 @@ if(Allow_Origin_Enable){
 }
 header('Content-Type: ' . 'application/json;charset=utf-8');
 
-$created = date("i:s");
+date_default_timezone_set('Asia/Shanghai');
+$created = date("H:i:s");
 
 $cmd = 'wmic cpu get loadpercentage';
 exec($cmd, $out);
